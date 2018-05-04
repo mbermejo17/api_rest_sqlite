@@ -10,7 +10,7 @@ const port = process.env.PORT || 443;
 https.createServer({
     key: fs.readFileSync('./certs/ssl.key'),
     cert: fs.readFileSync('./certs/ssl.crt')
-}, app).listen(PORT, function(){
-    console.log("https server listening on port " + PORT + "...");
+}, app).listen(port, function(){
+    console.log("https server listening on port " + port + "...");
 });
 //server.listen(port);
