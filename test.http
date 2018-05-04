@@ -1,0 +1,36 @@
+GET https://localhost:8443/user HTTP/1.1
+
+###
+
+GET https://localhost:8443/user/name/Pepe HTTP/1.1
+
+###
+GET https://localhost:8443/user/id/1 HTTP/1.1
+###
+GET https://localhost:8443/user/id/2 HTTP/1.1
+###
+GET https://localhost:8443/user/name/pedro HTTP/1.1
+
+###
+
+GET https://localhost:8443/user/login HTTP/1.1
+
+###
+
+POST https://localhost:8443/user/login HTTP/1.1
+
+content-type: application/json
+
+{
+    "username": "Pepe",
+    "passwd": "qazWsx$1"
+}
+
+###
+POST https://localhost:8443/user/add HTTP/1.1
+content-type: application/json
+
+{
+    "username": "Juan",
+    "passwd": "1234"
+}
