@@ -45,14 +45,14 @@ exports.user_signup = (req, res, next) => {
 };
 
 exports.user_login = (req, res, next) => {
-  User.Get(req.body.username,(status,data) => {
-   if(status) {
+  User.Get(req.body.username, (status, data) => {
+    if (status) {
       console.log(status);
       res.status(500).json({
         error: status
       });
     } else {
-      if (data){
+      if (data) {
         bcrypt.compare(req.body.password, data[0].UserPasswd, (err, result) => {
           if (err) {
             return res.status(401).json({
@@ -83,8 +83,8 @@ exports.user_login = (req, res, next) => {
         return res.status(401).json({
           message: "Auth failed"
         });
-      } 
-    }      
+      }
+    }
   });
 };
 
@@ -102,4 +102,34 @@ exports.user_delete = (req, res, next) => {
         error: err
       });
     });
+};
+
+exports.userAll = (req, res, next) => {
+  User.All((err, data) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    } else {
+      res.status(200).json({
+        message: data
+      });
+    }
+  });
+};
+
+exports.GetUser = (req, res, next) => {
+  User.Find( req.params.userId ,(err, data) => {
+    if (err) {
+      console.log(err);
+      res.status(500).json({
+        error: err
+      });
+    } else {
+      res.status(200).json({
+        message: data
+      });
+    }
+  });
 };

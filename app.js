@@ -6,11 +6,16 @@ const productRoutes = require("./api/routes/products");
 const orderRoutes = require("./api/routes/orders");
 const userRoutes = require('./api/routes/user');
 const User = require('./api/models/user');
+const Cipher = require('./lib/Cipher');
+
+const hw = Cipher.Encrypt("qazWsx$1");
+console.log(hw.toString());
+console.log(Cipher.Decrypt(hw));
 
 User.Open();
-User.CreateTable();
-User.Close();
-User.Open();
+//User.CreateTable();
+//User.Close();
+//User.Open();
 User.Get('Pepe',(status,data)=>{
   console.error(status);
   console.log(data);
