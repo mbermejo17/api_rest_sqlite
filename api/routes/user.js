@@ -4,14 +4,32 @@ const router = express.Router();
 const UserController = require('../controllers/user');
 const checkAuth = require('../middleware/check-auth');
 
-router.get("/", UserController.userAll);
+////////////////////////
+// Gestion de usuarios
+////////////////////////
 
-router.get("/:userId", UserController.GetUser);
+router.get("/", UserController.GetUserAll);
 
-router.post("/signup", UserController.user_signup);
+router.get("/id/:userId", UserController.GetUserById);
 
-router.post("/login", UserController.user_login);
+router.get("/name/:userName", UserController.GetUserByName);
 
-router.delete("/:userId", checkAuth, UserController.user_delete);
+router.post("/add", UserController.UserAdd);
+
+router.post("/login", UserController.UserLogin);
+
+router.delete("/:userId", checkAuth, UserController.UserDelete);
+
+/////////////////////////
+// Gestion Salas
+////////////////////////
+
+// TODO
+
+////////////////////////
+// Mantenimiento App
+///////////////////////
+
+// TODO
 
 module.exports = router;

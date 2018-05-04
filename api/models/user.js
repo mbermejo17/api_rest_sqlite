@@ -5,7 +5,7 @@ const sqlite3 = require('sqlite3').verbose();
 let UserModel = {};
 let db;
 
-let dbOpen = function () {
+let dbOpen = function() {
     db = new sqlite3.Database(dbPath, sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
         if (err) {
             console.error(err.message);
@@ -14,7 +14,7 @@ let dbOpen = function () {
     });
 };
 
-let dbClose = function () {
+let dbClose = function() {
     db.close((err) => {
         if (err) {
             console.error(err.message);
@@ -23,22 +23,22 @@ let dbClose = function () {
     });
 };
 
-UserModel.Open = function () {
+UserModel.Open = function() {
     dbOpen();
 }
 
-UserModel.CreateTable = function () {
+UserModel.CreateTable = function() {
     db.run("DROP TABLE IF EXISTS Users");
     db.run("CREATE TABLE IF NOT EXISTS Users (UserId INTEGER PRIMARY KEY AUTOINCREMENT, UserName NCHAR(55), UserPasswd NCHAR(55),  UserRole NCHAR(55))");
     console.log("La tabla usuarios ha sido correctamente creada");
 };
 
 
-UserModel.Close = function () {
+UserModel.Close = function() {
     dbClose();
 };
 
-UserModel.Find = function (userId, callback) {
+UserModel.Find = function(userId, callback) {
     let sql = `SELECT UserName, UserId, UserPasswd, UserRole
                FROM Users
                WHERE UserId  = ?`;
@@ -61,7 +61,7 @@ UserModel.Find = function (userId, callback) {
 };
 
 
-UserModel.Get = function (userName, callback) {
+UserModel.Get = function(userName, callback) {
     let sql = `SELECT UserName, UserId, UserPasswd, UserRole
                FROM Users
                WHERE UserName  = ?`;
@@ -84,7 +84,7 @@ UserModel.Get = function (userName, callback) {
 
 };
 
-UserModel.All = function (callback) {
+UserModel.All = function(callback) {
     let sql = `SELECT UserName, UserId, UserPasswd, UserRole 
                FROM Users`;
     dbOpen();
@@ -104,33 +104,30 @@ UserModel.All = function (callback) {
     });
 };
 
-UserModel.Add = function (userData, callback) {
+UserModel.Add = function(userData, callback) {
     let response = {}; //respuesta para devolver 
 
     dbOpen();
     let stmt = db.prepare("SELECT * FROM Users WHERE UserName = ?");
 
     stmt.bind(userData.username);
-    stmt.get(function (error, rows) {
+    stmt.get(function(error, rows) {
         //console.log(JSON.stringify(error)); return;
         if (error) {
             dbClose();
             throw err;
-        }
-        else {
+        } else {
             if (rows) {
                 dbClose();
                 callback({ msg: `El usuario ${userData.username} ya existe` });
-            }
-            else {
+            } else {
                 stmt = db.prepare("INSERT INTO Users VALUES (?,?,?,?)");
                 stmt.bind(null, userData.username, userData.password, userData.userrole);
-                stmt.run(function (err, result) {
+                stmt.run(function(err, result) {
                     dbClose();
                     if (err) {
                         throw err;
-                    }
-                    else {
+                    } else {
                         callback({ msg: `Usuario ${userData.username} añadido` });
                     }
                 });
@@ -140,4 +137,3 @@ UserModel.Add = function (userData, callback) {
 };
 
 module.exports = UserModel;
-
