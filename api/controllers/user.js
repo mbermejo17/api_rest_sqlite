@@ -76,17 +76,14 @@ exports.UserLogin = (req, res, next) => {
 };
 
 exports.UserDelete = (req, res, next) => {
-    User.Remove({ _id: req.params.userId })
-        .exec()
-        .then(result => {
+    User.Remove(req.params.userId, (err, data) => {
+        if (err) {
             res.status(200).json({ message: "User deleted" });
-        })
-        .catch(err => {
+        } else {
             console.log(err);
-            res
-                .status(500)
-                .json({ error: err });
-        });
+            res.status(500).json({ error: err });
+        }
+    });
 };
 
 exports.GetUserAll = (req, res, next) => {
