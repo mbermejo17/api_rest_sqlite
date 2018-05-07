@@ -8,7 +8,7 @@ html(lang="es")
     h1!= message
     hgroup
         h1 Acceso Usuario
-    form
+    form#frmLogon(style="display:none")
         .group
             input(type='text')#username
             span.highlight
@@ -23,6 +23,18 @@ html(lang="es")
             | Aceptar
             .ripples.buttonRipples
             span.ripplesCircle
+    #dashboard(style="display:none")
+      button.button.buttonBlue.camControl(type='button')#btnIZQ
+        | <- Izq
+        .ripples.buttonRipples
+        span.ripplesCircle
+      button.button.buttonBlue.camControl(type='button')#btnDER
+        | Der ->
+        .ripples.buttonRipples
+        span.ripplesCircle
+    #cam
+      video#video(autoplay="autplay")
+        canvas#canvas        
     footer
        
     script(src='js/jquery-2.2.4.min.js')

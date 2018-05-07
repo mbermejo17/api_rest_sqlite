@@ -49,14 +49,11 @@ exports.UserAdd = (req, res, next) => {
 
 exports.UserLogin = (req, res, next) => {
     User.Find(`SELECT UserName, UserPasswd, UserRole FROM Users WHERE UPPER(UserName) = '${req.body.username.toUpperCase()}'`, (status, data) => {
-        console.log(status, data);
         if (status) {
             console.log(status);
             res.status(500).json({ "status": 'FAIL', "message": status });
         } else {
             if (data) {
-                console.log(data);
-                console.log(req.body.userpasswd, data.UserPasswd);
                 //bcrypt.compare(req.body.password, data.UserPasswd, (err, result) => {
                 if (req.body.userpasswd === data.UserPasswd) {
                     /* const token = jwt.sign({
@@ -67,7 +64,7 @@ exports.UserLogin = (req, res, next) => {
                         UserName: data.UserName,
                         UserId: data._id
                     }, 'qazWsx$1', { expiresIn: "1h" });
-                    return res.status(200).json({ "status": 'OK', "message": token });
+                    return res.status(200).json({ "status": 'OK', "message": { "UserName": data.UserName, "Token": token, "Role": data.UserRole } });
                 } else {
                     return res.status(401).json({ "status": 'FAIL', "message": "Auth failed" });
                 }

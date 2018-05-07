@@ -1,6 +1,39 @@
 "use strict";
 $(window, document).load(function() {
 
+    window.URL = window.URL || window.webkitURL;
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia ||
+        function() {
+            alert('Su navegador no soporta navigator.getUserMedia().');
+        };
+
+
+    window.datosVideo = {
+        'StreamVideo': null,
+        'url': null
+    }
+
+    navigator.getUserMedia({
+        'audio': false,
+        'video': true
+    }, function(streamVideo) {
+        datosVideo.StreamVideo = streamVideo;
+        datosVideo.url = window.URL.createObjectURL(streamVideo);
+        jQuery('#camara').attr('src', datosVideo.url);
+
+    }, function() {
+        alert('No fue posible obtener acceso a la cámara.');
+    });
+
+
+    ('#botonDetener').on('click', function(e) {
+
+        if (datosVideo.StreamVideo) {
+            datosVideo.StreamVideo.stop();
+            window.URL.revokeObjectURL(datosVideo.url);
+        }
+
+    });
     var Base64 = (function() {
 
 
@@ -181,6 +214,21 @@ $(window, document).load(function() {
         };
     }());
 
+    var showCam = function() {
+        var oCamara, oFoto, oContexto, w, h;
+
+        oCamara = jQuery('#camara');
+        oFoto = jQuery('#foto');
+        w = oCamara.width();
+        h = oCamara.height();
+        oFoto.attr({
+            'width': w,
+            'height': h
+        });
+        oContexto = oFoto[0].getContext('2d');
+        oContexto.drawImage(oCamara[0], 0, 0, w, h);
+    };
+
     // AJAX call object
     var AJAXCallDeferred = function(url, type, data, stringify) {
         var type = type || 'POST';
@@ -234,15 +282,24 @@ $(window, document).load(function() {
         console.log(username, userpasswd);
         $.when(fnUserLogon)
             .done((data) => {
-
+                console.log("token", data.token);
+                localStorage.UserName = data.UserName;
+                localStorage.Token = data.Token;
+                localStorage.Role = data.Role;
+                $("#username").val("");
+                $("#userpasswd").val("");
+                $("#frmLogon").hide();
+                return false;
             })
             .fail((data) => {
-
+                console.error('Auth Failed');
+                return false;
             });
     };
 
 
-    $("#btnLogon").on('click', function() {
+    $("#btnLogon").on('click', function(e) {
+        e.preventDefault();
         userLogon($("#username").val(), Base64.encode($("#userpasswd").val()));
     });
 
@@ -277,5 +334,16 @@ $(window, document).load(function() {
     $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
         $(this).removeClass('is-active');
     });
+
+    if (localStorage.UserName &&
+        localStorage.Token &&
+        localStorage.Role) {
+        $('#frmLogon').hide();
+        $('#dashboard').show();
+        showCam;
+    } else {
+        $('#frmLogon').show();
+        $('#dashboard').hide();
+    }
 
 });
