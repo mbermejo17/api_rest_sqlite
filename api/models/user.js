@@ -83,9 +83,9 @@ UserModel.FindById = function(userId, callback) {
 UserModel.FindByName = function(userName, callback) {
     let sql = `SELECT UserName, UserId, UserPasswd, UserRole
                FROM Users
-               WHERE ucase(UserName)  = ucase(?)`;
+               WHERE UPPER(UserName)  = ?`;
     dbOpen();
-    db.get(sql, [userName], (err, row) => {
+    db.get(sql, [userName.toUpperCase()], (err, row) => {
         if (err) {
             console.error(err.message);
             dbClose();

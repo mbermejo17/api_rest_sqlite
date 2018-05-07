@@ -1,16 +1,17 @@
 "use strict";
-$(window, document).load(function () {
+$(window, document).load(function() {
 
     var Base64 = (function() {
-        
+
 
         var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-        var _utf8_encode = function (string) {
+        var _utf8_encode = function(string) {
 
-            var utftext = "", c, n;
+            var utftext = "",
+                c, n;
 
-            string = string.toString().replace(/\r\n/g,"\n");
+            string = string.toString().replace(/\r\n/g, "\n");
 
             for (n = 0; n < string.length; n++) {
 
@@ -20,7 +21,7 @@ $(window, document).load(function () {
 
                     utftext += String.fromCharCode(c);
 
-                } else if((c > 127) && (c < 2048)) {
+                } else if ((c > 127) && (c < 2048)) {
 
                     utftext += String.fromCharCode((c >> 6) | 192);
                     utftext += String.fromCharCode((c & 63) | 128);
@@ -38,10 +39,14 @@ $(window, document).load(function () {
             return utftext;
         };
 
-        var _utf8_decode = function (utftext) {
-            var string = "", i = 0, c = 0, c1 = 0, c2 = 0;
+        var _utf8_decode = function(utftext) {
+            var string = "",
+                i = 0,
+                c = 0,
+                c1 = 0,
+                c2 = 0;
 
-            while ( i < utftext.length ) {
+            while (i < utftext.length) {
 
                 c = utftext.charCodeAt(i);
 
@@ -50,16 +55,16 @@ $(window, document).load(function () {
                     string += String.fromCharCode(c);
                     i++;
 
-                } else if((c > 191) && (c < 224)) {
+                } else if ((c > 191) && (c < 224)) {
 
-                    c1 = utftext.charCodeAt(i+1);
+                    c1 = utftext.charCodeAt(i + 1);
                     string += String.fromCharCode(((c & 31) << 6) | (c1 & 63));
                     i += 2;
 
                 } else {
 
-                    c1 = utftext.charCodeAt(i+1);
-                    c2 = utftext.charCodeAt(i+2);
+                    c1 = utftext.charCodeAt(i + 1);
+                    c2 = utftext.charCodeAt(i + 2);
                     string += String.fromCharCode(((c & 15) << 12) | ((c1 & 63) << 6) | (c2 & 63));
                     i += 3;
 
@@ -71,9 +76,10 @@ $(window, document).load(function () {
         };
 
         var _hexEncode = function(input) {
-            var output = '', i;
+            var output = '',
+                i;
 
-            for(i = 0; i < input.length; i++) {
+            for (i = 0; i < input.length; i++) {
                 output += input.charCodeAt(i).toString(16);
             }
 
@@ -81,21 +87,23 @@ $(window, document).load(function () {
         };
 
         var _hexDecode = function(input) {
-            var output = '', i;
+            var output = '',
+                i;
 
-            if(input.length % 2 > 0) {
+            if (input.length % 2 > 0) {
                 input = '0' + input;
             }
 
-            for(i = 0; i < input.length; i = i + 2) {
+            for (i = 0; i < input.length; i = i + 2) {
                 output += String.fromCharCode(parseInt(input.charAt(i) + input.charAt(i + 1), 16));
             }
 
             return output;
         };
 
-        var encode = function (input) {
-            var output = "", chr1, chr2, chr3, enc1, enc2, enc3, enc4, i = 0;
+        var encode = function(input) {
+            var output = "",
+                chr1, chr2, chr3, enc1, enc2, enc3, enc4, i = 0;
 
             input = _utf8_encode(input);
 
@@ -126,8 +134,9 @@ $(window, document).load(function () {
             return output;
         };
 
-        var decode = function (input) {
-            var output = "", chr1, chr2, chr3, enc1, enc2, enc3, enc4, i = 0;
+        var decode = function(input) {
+            var output = "",
+                chr1, chr2, chr3, enc1, enc2, enc3, enc4, i = 0;
 
             input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
 
@@ -173,7 +182,7 @@ $(window, document).load(function () {
     }());
 
     // AJAX call object
-    var AJAXCallDeferred = function (url, type, data, stringify) {
+    var AJAXCallDeferred = function(url, type, data, stringify) {
         var type = type || 'POST';
         var stringify = stringify || false;
         var df = $.Deferred();
@@ -183,7 +192,7 @@ $(window, document).load(function () {
             data: data,
             dataType: 'json',
             timeout: 10000,
-            success: function (result) {
+            success: function(result) {
                 if (result) {
                     console.log(result);
                     if (stringify === true) {
@@ -198,7 +207,7 @@ $(window, document).load(function () {
                     }
                 }
             },
-            error: function (xhr, status) {
+            error: function(xhr, status) {
                 if (status === "timeout") {
                     df.reject('Servicio no disponible\n, intÃ©ntelo mas tarde.');
                 } else {
@@ -206,7 +215,7 @@ $(window, document).load(function () {
                 }
                 console.log(xhr, status);
             },
-            complete: function (xhr, status) {
+            complete: function(xhr, status) {
                 console.log(xhr, status);
             }
         });
@@ -218,21 +227,26 @@ $(window, document).load(function () {
 
 
     var userLogon = function(username, userpasswd) {
-        var fnUserLogon = new AJAXCallDeferred('/user/logon', 'POST', {
+        var fnUserLogon = new AJAXCallDeferred('/user/login', 'POST', {
             'username': username,
             'userpasswd': userpasswd
         }, true);
-        console.log(username,userpasswd);
+        console.log(username, userpasswd);
+        $.when(fnUserLogon)
+            .done((data) => {
 
-        $.when(fnUserLogon).done((data)=>{}).fail((data)=>{});
+            })
+            .fail((data) => {
+
+            });
     };
 
 
-    $("#btnLogon").on('click',function (){
-        userLogon($("#username").val(),Base64.encode($("#userpasswd").val() ));
+    $("#btnLogon").on('click', function() {
+        userLogon($("#username").val(), Base64.encode($("#userpasswd").val()));
     });
 
-    $('input').blur(function () {
+    $('input').blur(function() {
         var $this = $(this);
         console.log($this);
         if ($this.val())
@@ -242,7 +256,7 @@ $(window, document).load(function () {
     });
 
 
-    $ripples.on('click.Ripples', function (e) {
+    $ripples.on('click.Ripples', function(e) {
 
         var $this = $(this);
         var $offset = $this.parent().offset();
@@ -260,7 +274,7 @@ $(window, document).load(function () {
 
     });
 
-    $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function (e) {
+    $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
         $(this).removeClass('is-active');
     });
 
