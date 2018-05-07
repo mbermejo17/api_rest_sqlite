@@ -34,7 +34,7 @@ form {
 input {
 	font-size: 18px;
 	padding: 10px 10px 10px 5px;
-	-webkit-appearance: none;
+	/**-webkit-appearance: none;**/
 	display: block;
 	background: #fafafa;
 	color: #636363;
