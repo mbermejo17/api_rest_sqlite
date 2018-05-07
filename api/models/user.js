@@ -80,6 +80,29 @@ UserModel.FindById = function(userId, callback) {
 };
 
 
+UserModel.Remove = function(userId, callback) {
+    let sql = `DELETE *
+             FROM Users
+             WHERE UserId  = ?`;
+    dbOpen();
+    db.get(sql, [userId], (err, row) => {
+        if (err) {
+            dbClose();
+            console.error(err.message);
+            callback(err.message, null);
+        } else {
+            if (row) {
+                dbClose();
+                callback(null, row);
+            } else {
+                dbClose();
+                callback(`Usuario con id ${userId} no encontrado`, null);
+            }
+        }
+    });
+};
+
+
 UserModel.FindByName = function(userName, callback) {
     let sql = `SELECT UserName, UserId, UserPasswd, UserRole
                FROM Users
