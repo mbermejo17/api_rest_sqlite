@@ -121,7 +121,7 @@ exports.GetUserAll = (req, res, next) => {
 
 
 exports.GetUserByName = (req, res, next) => {
-    User.Get(req.params.userName, (err, data) => {
+    User.FindByName(req.params.userName, (err, data) => {
         if (err) {
             console.log(err);
             res.status(500).json({
@@ -138,7 +138,7 @@ exports.GetUserByName = (req, res, next) => {
 };
 
 exports.GetUserById = (req, res, next) => {
-    User.Find(req.params.userId, (err, data) => {
+    User.FindById(req.params.userId, (err, data) => {
         if (err) {
             console.log(err);
             res.status(500).json({

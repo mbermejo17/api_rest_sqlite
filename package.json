@@ -5,14 +5,14 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "SET PORT=8443 && nodemon server.js"
   },
   "keywords": [
     "node",
     "restful",
     "api"
   ],
-  "author": "Maximilian Schwarzmüller",
+  "author": "MBL",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^1.0.3",
@@ -30,6 +30,7 @@
     "sqlite3": "^4.0.0"
   },
   "devDependencies": {
-    "nodemon": "^1.12.1"
+    "nodemon": "^1.12.1",
+    "pug": "^2.0.3"
   }
 }

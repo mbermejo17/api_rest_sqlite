@@ -38,7 +38,26 @@ UserModel.Close = function() {
     dbClose();
 };
 
-UserModel.Find = function(userId, callback) {
+UserModel.Find = function(queryString, callback) {
+    dbOpen();
+    db.get(queryString, (err, row) => {
+        if (err) {
+            dbClose();
+            console.error(err.message);
+            callback(err.message, null);
+        } else {
+            if (row) {
+                dbClose();
+                callback(null, row);
+            } else {
+                dbClose();
+                callback(`No se encuentran registros`, null);
+            }
+        }
+    });
+};
+
+UserModel.FindById = function(userId, callback) {
     let sql = `SELECT UserName, UserId, UserPasswd, UserRole
                FROM Users
                WHERE UserId  = ?`;
@@ -61,10 +80,10 @@ UserModel.Find = function(userId, callback) {
 };
 
 
-UserModel.Get = function(userName, callback) {
+UserModel.FindByName = function(userName, callback) {
     let sql = `SELECT UserName, UserId, UserPasswd, UserRole
                FROM Users
-               WHERE UserName  = ?`;
+               WHERE ucase(UserName)  = ucase(?)`;
     dbOpen();
     db.get(sql, [userName], (err, row) => {
         if (err) {

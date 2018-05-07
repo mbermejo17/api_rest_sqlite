@@ -1,0 +1,35 @@
+doctype html
+html(lang="es")
+  head
+    meta(charset='UTF-8')
+    title!= title
+    link(rel="stylesheet", href="css/style.css")
+  body
+    h1!= message
+    hgroup
+        h1 Acceso Usuario
+    form
+        .group
+            input(type='text')
+            span.highlight
+            span.bar
+            label Usuario
+        .group
+            input(type='password')
+            span.highlight
+            span.bar
+            label Clave
+        button.button.buttonBlue(type='button')
+            | Aceptar
+            .ripples.buttonRipples
+            span.ripplesCircle
+    footer
+        a(href='http://www.polymer-project.org/' target='_blank')
+            img(src='https://www.polymer-project.org/images/logos/p-logo.svg')
+        p
+            | You Gotta Love 
+            a(href='http://www.polymer-project.org/' target='_blank') Google
+    script(src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js')
+    script(src='js/logon.js')
+        
+    
