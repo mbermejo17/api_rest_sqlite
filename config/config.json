@@ -1,0 +1,6 @@
+{
+    "wsURL": "wss://localhost:8443",
+    "serverPORT": "8443",
+    "dbName": "app.db",
+    "dbPath": "./db"
+}

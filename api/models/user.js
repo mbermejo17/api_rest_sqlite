@@ -1,5 +1,6 @@
 const path = require('path')
-const dbPath = path.resolve('./db', 'app.db')
+const config = require('../../config/config.json');
+const dbPath = path.resolve(config.dbPath, config.dbName);
 const sqlite3 = require('sqlite3').verbose();
 
 let UserModel = {};

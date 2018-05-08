@@ -31,10 +31,10 @@ app.use((req, res, next) => {
 });
 
 // Routes handle requests
-app.get('/', function (req, res) {
-    res.render('index', { title: 'Logon', message: ''});
-  });
-  
+app.get('/', function(req, res) {
+    res.render('index', { title: 'Logon', message: '' });
+});
+
 app.use("/products", productRoutes);
 app.use("/orders", orderRoutes);
 app.use("/user", userRoutes);

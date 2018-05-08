@@ -1,7 +1,7 @@
 "use strict";
 $(window, document).load(function() {
 
-    var wss = new WebSocket('wss://172.100.14.173:8443');
+    var wss = new WebSocket('wss://localhost:8443');
     var Base64 = (function() {
 
 
@@ -182,7 +182,7 @@ $(window, document).load(function() {
         };
     }());
 
-    
+
 
     // AJAX call object
     var AJAXCallDeferred = function(url, type, data, stringify) {
@@ -285,13 +285,13 @@ $(window, document).load(function() {
         });
 
         $this.addClass('is-active');
-        if ($this[0].id === 'btnIZQ')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_IZQ'}"));
-        if ($this[0].id === 'btnDER')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_DER'}"));
-        if ($this[0].id === 'btnUP')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_UP'}"));
-        if ($this[0].id === 'btnDOWN')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_DOWN'}"));
-        if ($this[0].id === 'btnZIN')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_ZIN'}"));
-        if ($this[0].id === 'btnZOUT')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_ZOUT'}"));
-        if ($this[0].id === 'btnHOME')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_HOME'}"));
+        if ($this[0].id === 'btnIZQ') wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_IZQ'}"));
+        if ($this[0].id === 'btnDER') wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_DER'}"));
+        if ($this[0].id === 'btnUP') wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_UP'}"));
+        if ($this[0].id === 'btnDOWN') wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_DOWN'}"));
+        if ($this[0].id === 'btnZIN') wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_ZIN'}"));
+        if ($this[0].id === 'btnZOUT') wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_ZOUT'}"));
+        if ($this[0].id === 'btnHOME') wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_HOME'}"));
     });
 
     $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
@@ -307,9 +307,14 @@ $(window, document).load(function() {
         $('#frmLogon').show();
         $('#dashboard').hide();
     }
-    wss.onmessage = function (message) {
-        console.log(`received: ${message.toString()}`);
-        
-        $('#message').html(`received: ${JSON.stringify(message, null, "    ")}`);
-      };
+    wss.onmessage = function(message) {
+        console.log(message.data);
+        var data = $.parseJSON(message.data);
+        var event = data.event;
+        var message = data.message;
+
+        if (event === 'KeepAlive') wss.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
+        $('#message').html(`received: ${data.message}`);
+
+    };
 });
