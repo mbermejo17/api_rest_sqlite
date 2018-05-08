@@ -48,6 +48,7 @@ exports.UserAdd = (req, res, next) => {
 };
 
 exports.UserLogin = (req, res, next) => {
+    console.log(req.query);
     User.Find(`SELECT UserName, UserPasswd, UserRole FROM Users WHERE UPPER(UserName) = '${req.body.username.toUpperCase()}'`, (status, data) => {
         if (status) {
             console.log(status);

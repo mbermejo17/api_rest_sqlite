@@ -230,10 +230,11 @@ $(window, document).load(function() {
 
 
     var userLogon = function(username, userpasswd) {
-        var fnUserLogon = new AJAXCallDeferred('/user/login', 'POST', {
+        var jsonData = {
             'username': username,
             'userpasswd': userpasswd
-        }, true);
+        };
+        var fnUserLogon = new AJAXCallDeferred('/user/login', 'POST', jsonData, true);
         console.log(username, userpasswd);
         $.when(fnUserLogon)
             .done((data) => {
