@@ -1,39 +1,7 @@
 "use strict";
 $(window, document).load(function() {
 
-    window.URL = window.URL || window.webkitURL;
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia ||
-        function() {
-            alert('Su navegador no soporta navigator.getUserMedia().');
-        };
-
-
-    window.datosVideo = {
-        'StreamVideo': null,
-        'url': null
-    }
-
-    navigator.getUserMedia({
-        'audio': false,
-        'video': true
-    }, function(streamVideo) {
-        datosVideo.StreamVideo = streamVideo;
-        datosVideo.url = window.URL.createObjectURL(streamVideo);
-        jQuery('#camara').attr('src', datosVideo.url);
-
-    }, function() {
-        alert('No fue posible obtener acceso a la cámara.');
-    });
-
-
-    ('#botonDetener').on('click', function(e) {
-
-        if (datosVideo.StreamVideo) {
-            datosVideo.StreamVideo.stop();
-            window.URL.revokeObjectURL(datosVideo.url);
-        }
-
-    });
+    var wss = new WebSocket('wss://172.100.14.173:8443');
     var Base64 = (function() {
 
 
@@ -214,20 +182,7 @@ $(window, document).load(function() {
         };
     }());
 
-    var showCam = function() {
-        var oCamara, oFoto, oContexto, w, h;
-
-        oCamara = jQuery('#camara');
-        oFoto = jQuery('#foto');
-        w = oCamara.width();
-        h = oCamara.height();
-        oFoto.attr({
-            'width': w,
-            'height': h
-        });
-        oContexto = oFoto[0].getContext('2d');
-        oContexto.drawImage(oCamara[0], 0, 0, w, h);
-    };
+    
 
     // AJAX call object
     var AJAXCallDeferred = function(url, type, data, stringify) {
@@ -289,6 +244,7 @@ $(window, document).load(function() {
                 $("#username").val("");
                 $("#userpasswd").val("");
                 $("#frmLogon").hide();
+                $('#dashboard').show();
                 return false;
             })
             .fail((data) => {
@@ -316,6 +272,7 @@ $(window, document).load(function() {
     $ripples.on('click.Ripples', function(e) {
 
         var $this = $(this);
+        console.log($this[0].id);
         var $offset = $this.parent().offset();
         var $circle = $this.find('.ripplesCircle');
 
@@ -328,7 +285,13 @@ $(window, document).load(function() {
         });
 
         $this.addClass('is-active');
-
+        if ($this[0].id === 'btnIZQ')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_IZQ'}"));
+        if ($this[0].id === 'btnDER')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_DER'}"));
+        if ($this[0].id === 'btnUP')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_UP'}"));
+        if ($this[0].id === 'btnDOWN')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_DOWN'}"));
+        if ($this[0].id === 'btnZIN')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_ZIN'}"));
+        if ($this[0].id === 'btnZOUT')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_ZOUT'}"));
+        if ($this[0].id === 'btnHOME')  wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_HOME'}"));
     });
 
     $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
@@ -340,10 +303,13 @@ $(window, document).load(function() {
         localStorage.Role) {
         $('#frmLogon').hide();
         $('#dashboard').show();
-        showCam;
     } else {
         $('#frmLogon').show();
         $('#dashboard').hide();
     }
-
+    wss.onmessage = function (message) {
+        console.log(`received: ${message.toString()}`);
+        
+        $('#message').html(`received: ${JSON.stringify(message, null, "    ")}`);
+      };
 });
