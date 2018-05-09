@@ -1,6 +1,8 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const md5 = require('js-md5');
+const Base64 = require('js-base64').Base64;
 
 const User = require("../models/user");
 
@@ -56,7 +58,9 @@ exports.UserLogin = (req, res, next) => {
         } else {
             if (data) {
                 //bcrypt.compare(req.body.password, data.UserPasswd, (err, result) => {
-                if (req.body.userpasswd === data.UserPasswd) {
+                console.log(Base64.encode(req.body.userpasswd));     
+                console.log(Base64.decode(data.UserPasswd));  
+                if (req.body.userpasswd === Base64.decode(data.UserPasswd)) {
                     /* const token = jwt.sign({
                         UserName: data.UserName,
                         UserId: data._id
