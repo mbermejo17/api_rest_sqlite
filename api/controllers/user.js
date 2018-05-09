@@ -95,6 +95,7 @@ exports.GetUserAll = (req, res, next) => {
                 .status(500)
                 .json({ "status": "FAIL", "message": err });
         } else {
+            let jsonResult = '';
             res
                 .status(200)
                 .json({ "status": "OK", "message": data });

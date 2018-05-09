@@ -41,6 +41,7 @@ UserModel.Close = function() {
 
 UserModel.Find = function(queryString, callback) {
     dbOpen();
+   
     db.get(queryString, (err, row) => {
         if (err) {
             dbClose();
@@ -94,6 +95,7 @@ UserModel.Remove = function(userId, callback) {
         } else {
             if (row) {
                 dbClose();
+                console.log(row);
                 callback(null, row);
             } else {
                 dbClose();
@@ -131,20 +133,41 @@ UserModel.All = function(callback) {
     let sql = `SELECT UserName, UserId, UserPasswd, UserRole 
                FROM Users`;
     dbOpen();
-    db.get(sql, (err, row) => {
+    let allRows = [];
+    db.each(sql,(err,row)=>{
+        if (err) {
+            dbClose();
+            console.error(err.message);
+            callback(err.message, null);
+        } else {
+            allRows.push(row);
+        } 
+    }, (err,count)=>{
+        if( allRows.length >=1 ){
+            dbClose();
+            console.log(allRows);
+            callback(null, allRows);
+        } else {
+            dbClose();
+            callback(`No se encuentran registros`, null);
+        }  
+    });
+      
+    /* db.get(sql, (err, row) => {
         if (err) {
             dbClose();
             console.error(err.message);
             callback(err.message, null);
         } else {
             dbClose();
+            console.log(row);
             if (row) {
                 callback(null, row);
             } else {
                 callback('No se encuentran registros', null);
             }
         }
-    });
+    }); */
 };
 
 UserModel.Add = function(userData, callback) {
