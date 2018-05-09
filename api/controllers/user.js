@@ -58,8 +58,8 @@ exports.UserLogin = (req, res, next) => {
         } else {
             if (data) {
                 //bcrypt.compare(req.body.password, data.UserPasswd, (err, result) => {
-                console.log(Base64.encode(req.body.userpasswd));     
-                console.log(Base64.decode(data.UserPasswd));  
+                //console.log(Base64.encode(req.body.userpasswd));     
+                //console.log(Base64.decode(data.UserPasswd));  
                 if (req.body.userpasswd === Base64.decode(data.UserPasswd)) {
                     /* const token = jwt.sign({
                         UserName: data.UserName,
