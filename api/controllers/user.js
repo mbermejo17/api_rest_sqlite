@@ -3,6 +3,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const md5 = require('js-md5');
 const Base64 = require('js-base64').Base64;
+const config = require('../../config/config.json');
+const JWT_KEY = config.jwtKey;
+
 
 const User = require("../models/user");
 
@@ -60,7 +63,7 @@ exports.UserLogin = (req, res, next) => {
                 //bcrypt.compare(req.body.password, data.UserPasswd, (err, result) => {
                 //console.log(Base64.encode(req.body.userpasswd));     
                 //console.log(Base64.decode(data.UserPasswd));  
-                if (req.body.userpasswd === Base64.decode(data.UserPasswd)) {
+                if (Base64.decode(req.body.userpasswd) === data.UserPasswd) {
                     /* const token = jwt.sign({
                         UserName: data.UserName,
                         UserId: data._id
@@ -68,8 +71,16 @@ exports.UserLogin = (req, res, next) => {
                     const token = jwt.sign({
                         UserName: data.UserName,
                         UserId: data._id
-                    }, 'qazWsx$1', { expiresIn: "1h" });
-                    return res.status(200).json({ "status": 'OK', "message": { "UserName": data.UserName, "Token": token, "Role": data.UserRole } });
+                    }, JWT_KEY, { expiresIn: "10min" });
+                    return res.status(200).json({
+                        "status": 'OK',
+                        "message": {
+                            "UserName": data.UserName,
+                            "Token": token,
+                            "Role": data.UserRole,
+                            "wssURL": config.wssURL
+                        }
+                    });
                 } else {
                     return res.status(401).json({ "status": 'FAIL', "message": "Auth failed" });
                 }

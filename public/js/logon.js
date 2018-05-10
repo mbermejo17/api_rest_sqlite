@@ -2,9 +2,14 @@
 
 $(window, document).load(function () {
 
-    var wss = new WebSocket('wss://localhost:8443');
+    
+    if($('#wssURL').val()) {
+        var wss = new WebSocket($('#wssURL').val());
+    } else {
+        var wss = null;
+    }  
 
-
+    console.log(wss);
 
 
     // AJAX call object
@@ -61,10 +66,11 @@ $(window, document).load(function () {
         console.log(username, userpasswd);
         $.when(fnUserLogon)
             .done((data) => {
-                console.log("token", data.token);
+                console.log(data);
                 localStorage.UserName = data.UserName;
                 localStorage.Token = data.Token;
                 localStorage.Role = data.Role;
+                $("#wssURL").val(data.wssURL).trigger("change");
                 $("#username").val("");
                 $("#userpasswd").val("");
                 $("#frmLogon").hide();
@@ -80,7 +86,7 @@ $(window, document).load(function () {
 
     $("#btnLogon").on('click', function (e) {
         e.preventDefault();
-        userLogon($("#username").val(), md5($("#userpasswd").val()));
+        userLogon($("#username").val(), Base64.encode(md5($("#userpasswd").val())));
     });
 
     $('input').blur(function () {
@@ -131,16 +137,22 @@ $(window, document).load(function () {
         $('#frmLogon').show();
         $('#dashboard').hide();
     }
-    wss.onmessage = function (message) {
-        console.log(message.data);
-        var data = $.parseJSON(message.data);
-        var event = data.event;
-        var message = data.message;
-
-        if (event === 'KeepAlive') wss.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
-        $('#message').html(`received: ${data.message}`);
-
+    wss.onopen = function(event){
+        $('#message').html('Connected to: ' + event.currentTarget.url);
+        wss.onmessage = function (message) {
+            console.log(message.data);
+            var data = $.parseJSON(message.data);
+            var event = data.event;
+            var message = data.message;
+            if (event === 'KeepAlive') wss.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
+            $('#message').html(`received: ${data.message}`);
+        };
     };
+    $('#wssURL').bind('change');
+    $('#wssURL').on('change',function(e){
+        console.log('WebSocket connection ')
+        wss = new WebSocket($('#wssURL').val());
+    });
 });
 
 

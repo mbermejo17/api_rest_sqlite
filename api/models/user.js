@@ -11,7 +11,7 @@ let dbOpen = function() {
         if (err) {
             console.error(err.message);
         }
-        console.log('Connected to the app database.');
+        console.log(`Connected to ${config.dbName} database.`);
     });
 };
 
@@ -20,7 +20,7 @@ let dbClose = function() {
         if (err) {
             console.error(err.message);
         }
-        console.log('Close the database connection.');
+        console.log('Database connection closed.');
     });
 };
 
