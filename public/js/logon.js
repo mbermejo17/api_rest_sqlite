@@ -6,12 +6,16 @@ $(window, document).load(function () {
     if($('#wssURL').val()) {
         var wss = new WebSocket($('#wssURL').val());
     } else {
-        var wss = null;
+        var wss = new WebSocket('ws://127.0.0.1');
     }  
 
     console.log(wss);
 
-
+    var openSocket =function(){
+        console.log('WebSocket connection ')
+        wss = new WebSocket($('#wssURL').val());
+        wss.set_monitor_interval(60);
+    };
     // AJAX call object
     var AJAXCallDeferred = function (url, type, data, stringify) {
         var type = type || 'POST';
@@ -70,11 +74,12 @@ $(window, document).load(function () {
                 localStorage.UserName = data.UserName;
                 localStorage.Token = data.Token;
                 localStorage.Role = data.Role;
-                $("#wssURL").val(data.wssURL).trigger("change");
+                $("#wssURL").val(data.wssURL);
                 $("#username").val("");
                 $("#userpasswd").val("");
                 $("#frmLogon").hide();
                 $('#dashboard').show();
+                openSocket();
                 return false;
             })
             .fail((data) => {
@@ -144,15 +149,13 @@ $(window, document).load(function () {
             var data = $.parseJSON(message.data);
             var event = data.event;
             var message = data.message;
-            if (event === 'KeepAlive') wss.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
+            if (event === 'KeepAlive') {
+                wss.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
+                wss.pong();
+            }
             $('#message').html(`received: ${data.message}`);
         };
     };
-    $('#wssURL').bind('change');
-    $('#wssURL').on('change',function(e){
-        console.log('WebSocket connection ')
-        wss = new WebSocket($('#wssURL').val());
-    });
 });
 
 

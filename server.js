@@ -15,6 +15,7 @@ let httpsServer = https.createServer({
     console.log("https server listening on port " + port + "...");
 });
 
+let noop = ()=>{};
 
 let wss = new WebSocketServer({
     server: httpsServer
@@ -31,6 +32,7 @@ const interval = setInterval(function sendKeepAlive() {
         if (ws.isAlive === false) return ws.terminate();
         ws.isAlive = false;
         ws.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
+        ws.ping(noop);
     });
 }, 30000);
 
@@ -52,6 +54,9 @@ wss.on('connection', function connection(ws, req) {
         if (eventType === 'KeepAlive') ws.isAlive = true;
         //ws.send(`Data received from IP ${ip} : ${data.toString()} `) // echo-server
     })
+    ws.on('pong',()=>{
+        ws.isAlive=true;
+    });
     ws.on("close", function() {
         console.log("websocket connection closed ID: " + ws.id);
     });
