@@ -1,23 +1,40 @@
 "use strict";
 
-$(window, document).load(function () {
+$(window, document).load(function() {
 
-    
-    if($('#wssURL').val()) {
+
+    if ($('#wssURL').val()) {
         var wss = new WebSocket($('#wssURL').val());
-    } else {
-        var wss = new WebSocket('ws://127.0.0.1');
-    }  
+        openSocket();
+    }
+    window.onbeforeunload = function() {
+        wss.onclose = function() {};
+        wss.close();
+        localStorage.clear();
+    };
 
     console.log(wss);
 
-    var openSocket =function(){
+    var openSocket = function() {
         console.log('WebSocket connection ')
         wss = new WebSocket($('#wssURL').val());
-        wss.set_monitor_interval(60);
+        wss.onopen = function(event) {
+            $('#message').html('Connected to: ' + event.currentTarget.url);
+            wss.onmessage = function(message) {
+                console.log(message.data);
+                var data = $.parseJSON(message.data);
+                var event = data.event;
+                var message = data.message;
+                if (event === 'KeepAlive') {
+                    wss.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
+                    wss.pong();
+                }
+                $('#message').html(`received: ${data.message}`);
+            };
+        };
     };
     // AJAX call object
-    var AJAXCallDeferred = function (url, type, data, stringify) {
+    var AJAXCallDeferred = function(url, type, data, stringify) {
         var type = type || 'POST';
         var stringify = stringify || false;
         var df = $.Deferred();
@@ -27,7 +44,7 @@ $(window, document).load(function () {
             data: data,
             dataType: 'json',
             timeout: 10000,
-            success: function (result) {
+            success: function(result) {
                 if (result) {
                     console.log(result);
                     if (stringify === true) {
@@ -42,7 +59,7 @@ $(window, document).load(function () {
                     }
                 }
             },
-            error: function (xhr, status) {
+            error: function(xhr, status) {
                 if (status === "timeout") {
                     df.reject('Servicio no disponible\n, intÃ©ntelo mas tarde.');
                 } else {
@@ -50,7 +67,7 @@ $(window, document).load(function () {
                 }
                 console.log(xhr, status);
             },
-            complete: function (xhr, status) {
+            complete: function(xhr, status) {
                 console.log(xhr, status);
             }
         });
@@ -61,7 +78,7 @@ $(window, document).load(function () {
     var $ripples = $('.ripples');
 
 
-    var userLogon = function (username, userpasswd) {
+    var userLogon = function(username, userpasswd) {
         var jsonData = {
             'username': username,
             'userpasswd': userpasswd
@@ -71,9 +88,9 @@ $(window, document).load(function () {
         $.when(fnUserLogon)
             .done((data) => {
                 console.log(data);
-                localStorage.UserName = data.UserName;
-                localStorage.Token = data.Token;
-                localStorage.Role = data.Role;
+                localStorage.setItem('UserName', data.UserName);
+                localStorage.setItem('Token', data.Token);
+                localStorage.setItem('Role', data.Role);
                 $("#wssURL").val(data.wssURL);
                 $("#username").val("");
                 $("#userpasswd").val("");
@@ -89,12 +106,12 @@ $(window, document).load(function () {
     };
 
 
-    $("#btnLogon").on('click', function (e) {
+    $("#btnLogon").on('click', function(e) {
         e.preventDefault();
         userLogon($("#username").val(), Base64.encode(md5($("#userpasswd").val())));
     });
 
-    $('input').blur(function () {
+    $('input').blur(function() {
         var $this = $(this);
         console.log($this);
         if ($this.val())
@@ -104,7 +121,7 @@ $(window, document).load(function () {
     });
 
 
-    $ripples.on('click.Ripples', function (e) {
+    $ripples.on('click.Ripples', function(e) {
 
         var $this = $(this);
         console.log($this[0].id);
@@ -129,7 +146,7 @@ $(window, document).load(function () {
         if ($this[0].id === 'btnHOME') wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_HOME'}"));
     });
 
-    $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function (e) {
+    $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
         $(this).removeClass('is-active');
     });
 
@@ -142,20 +159,5 @@ $(window, document).load(function () {
         $('#frmLogon').show();
         $('#dashboard').hide();
     }
-    wss.onopen = function(event){
-        $('#message').html('Connected to: ' + event.currentTarget.url);
-        wss.onmessage = function (message) {
-            console.log(message.data);
-            var data = $.parseJSON(message.data);
-            var event = data.event;
-            var message = data.message;
-            if (event === 'KeepAlive') {
-                wss.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
-                wss.pong();
-            }
-            $('#message').html(`received: ${data.message}`);
-        };
-    };
+
 });
-
-
