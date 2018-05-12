@@ -2,6 +2,7 @@
 
 $(window, document).load(function() {
 
+    var $wssURL = document.getElementById("#wssURL");
 
     if ($('#wssURL').val()) {
         var wss = new WebSocket($('#wssURL').val());
