@@ -23,35 +23,52 @@ html(lang="es")
             | Aceptar
             .ripples.buttonRipples
             span.ripplesCircle
-    #dashboard(style="display:none")
-      button.button.buttonBlue.camControl(type='button')
-        | LEFT
-        .ripples.buttonRipples#btnIZQ
-        span.ripplesCircle
-      button.button.buttonBlue.camControl(type='button')
-        | RIGHT
-        .ripples.buttonRipples#btnDER
-        span.ripplesCircle   
-      button.button.buttonBlue.camControl(type='button')
-        | UP
-        .ripples.buttonRipples#btnUP
-        span.ripplesCircle
-      button.button.buttonBlue.camControl(type='button')
-        | DOWN
-        .ripples.buttonRipples#btnDOWN
-        span.ripplesCircle
-      button.button.buttonBlue.camControl(type='button')
-        | Zoom IN
-        .ripples.buttonRipples#btnZIN
-        span.ripplesCircle
-      button.button.buttonBlue.camControl(type='button')
-        | Zoom OUT
-        .ripples.buttonRipples#btnZOUT
-        span.ripplesCircle     
-      button.button.buttonBlue.camControl(type='button')
-        | Home
-        .ripples.buttonRipples#btnHOME
-        span.ripplesCircle  
+    #dashboard(style="display:none").panel
+      .row         
+        button.button.buttonBlue.camControl(type='button')
+          | Home
+          .ripples.buttonRipples#btnHOME
+          span.ripplesCircle
+        button.button.buttonBlue.camControl(type='button')
+          | M1
+          .ripples.buttonRipples#btnM1
+          span.ripplesCircle
+        button.button.buttonBlue.camControl(type='button')
+          | M2
+          .ripples.buttonRipples#btnM2
+          span.ripplesCircle   
+        button.button.buttonBlue.camControl(type='button')
+          | M3
+          .ripples.buttonRipples#btnM3
+          span.ripplesCircle     
+      .row
+        button.button.buttonBlue.camControl(type='button')
+          | UP
+          .ripples.buttonRipples#btnUP
+          span.ripplesCircle
+      .row    
+        button.button.buttonBlue.camControl(type='button')
+          | LEFT
+          .ripples.buttonRipples#btnIZQ
+          span.ripplesCircle
+        button.button.buttonBlue.camControl(type='button')
+          | RIGHT
+          .ripples.buttonRipples#btnDER
+          span.ripplesCircle
+      .row       
+        button.button.buttonBlue.camControl(type='button')
+          | DOWN
+          .ripples.buttonRipples#btnDOWN
+          span.ripplesCircle
+      .row    
+        button.button.buttonBlue.camControl(type='button')
+          | Zoom IN
+          .ripples.buttonRipples#btnZIN
+          span.ripplesCircle
+        button.button.buttonBlue.camControl(type='button')
+          | Zoom OUT
+          .ripples.buttonRipples#btnZOUT
+          span.ripplesCircle 
     footer
       #message
     input(type="hidden", id="wssURL",name="wssURL",value="")   
