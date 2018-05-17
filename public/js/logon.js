@@ -3,22 +3,51 @@
 $(window, document).load(function() {
 
     var $wssURL = document.getElementById("#wssURL");
+    var wss = undefined;
+
+    var showDashboard = function(){
+        $("#username").val("");
+        $("#userpasswd").val("");
+        $("#frmLogon").hide();
+        $('#contentTitle').html("Control cámara");
+        $('#dashboard').show();
+    };
+
+    var getCookie = function(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+            var c = ca[i];
+            while (c.charAt(0) == ' ') {
+                c = c.substring(1);
+            }
+            if (c.indexOf(name) == 0) {
+                return c.substring(name.length, c.length);
+            }
+        }
+        return "";
+    };
 
 
-    if ($('#wssURL').val()) {
+    /* if ($('#wssURL').val()) {
         var wss = new WebSocket($('#wssURL').val());
         openSocket();
     }
+ */
+    
+
     window.onbeforeunload = function() {
-        if (wss) {
+      if (getCookie('sessionId')=== "") {  
+        if (!wss === undefined) {
             wss.onclose = function() {};
             wss.close();
         }
         localStorage.clear();
+      } 
     };
 
-    console.log(wss);
-
+    
     var openSocket = function() {
         console.log('WebSocket connection ')
         wss = new WebSocket($('#wssURL').val());
@@ -96,11 +125,7 @@ $(window, document).load(function() {
                 localStorage.setItem('Token', data.Token);
                 localStorage.setItem('Role', data.Role);
                 $("#wssURL").val(data.wssURL);
-                $("#username").val("");
-                $("#userpasswd").val("");
-                $("#frmLogon").hide();
-                $('#contentTitle').html("Control cámara");
-                $('#dashboard').show();
+                showDashboard();
                 openSocket();
                 return false;
             })

@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+const cookieParser = require('cookie-parser');
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 const productRoutes = require("./api/routes/products");
@@ -8,6 +9,7 @@ const userRoutes = require('./api/routes/user');
 const path = require('path');
 
 app.use(morgan("dev"));
+app.use(cookieParser());
 app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -31,8 +33,15 @@ app.use((req, res, next) => {
 });
 
 // Routes handle requests
-app.get('/', function(req, res) {
-    res.render('index', { title: 'Logon', message: '' });
+app.get('/', function(req, res,next) {
+    let cookie = req.cookies.sessionId;
+    console.log('cookie: '+ cookie);
+    if (cookie === undefined) {
+        res.render('index', { title: 'Logon', message: '' });
+    }else{
+        console.log('hola');
+        res.render('dashboard', { title: 'Dashboard', message: '' });
+    }  
 });
 
 app.use("/products", productRoutes);

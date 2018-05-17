@@ -53,7 +53,6 @@ exports.UserAdd = (req, res, next) => {
 };
 
 exports.UserLogin = (req, res, next) => {
-
     User.Find(`SELECT UserName, UserPasswd, UserRole FROM Users WHERE UPPER(UserName) = '${req.body.username.toUpperCase()}'`, (status, data) => {
         if (status) {
             console.log(status);
@@ -73,6 +72,7 @@ exports.UserLogin = (req, res, next) => {
                         UserId: data._id
                     }, JWT_KEY, { expiresIn: "10min" });
                     let wsPath = (data.UserRole === 'assistant') ? config.wssURL + '/room' : config.wssURL + '/client';
+                    res.cookie('sessionId',Base64.encode(data.UserName), { maxAge: 900000});
                     return res.status(200).json({
                         "status": 'OK',
                         "message": {
