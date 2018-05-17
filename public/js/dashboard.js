@@ -4,20 +4,11 @@ $(window, document).load(function() {
 
     var $wssURL = document.getElementById("#wssURL");
     var wss = undefined;
-
-    var showDashboard = function(){
-        $("#username").val("");
-        $("#userpasswd").val("");
-        $("#frmLogon").hide();
-        $('#contentTitle').html("Control cámara");
-        $('#dashboard').show();
-    };
-
     var getCookie = function(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
-        for(var i = 0; i <ca.length; i++) {
+        for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
             while (c.charAt(0) == ' ') {
                 c = c.substring(1);
@@ -35,19 +26,19 @@ $(window, document).load(function() {
         openSocket();
     }
  */
-    
+
 
     window.onbeforeunload = function() {
-      if (getCookie('sessionId')=== "") {  
-        if (!wss === undefined) {
-            wss.onclose = function() {};
-            wss.close();
+        if (getCookie('sessionId') === "") {
+            if (!wss === undefined) {
+                wss.onclose = function() {};
+                wss.close();
+            }
+            localStorage.clear();
         }
-        localStorage.clear();
-      } 
     };
 
-    
+
     var openSocket = function() {
         console.log('WebSocket connection ')
         wss = new WebSocket($('#wssURL').val());
@@ -111,36 +102,6 @@ $(window, document).load(function() {
     var $ripples = $('.ripples');
 
 
-    var userLogon = function(username, userpasswd) {
-        var jsonData = {
-            'username': username,
-            'userpasswd': userpasswd
-        };
-        var fnUserLogon = new AJAXCallDeferred('/user/login', 'POST', jsonData, true);
-        console.log(username, userpasswd);
-        $.when(fnUserLogon)
-            .done((data) => {
-                console.log(data);
-                localStorage.setItem('UserName', data.UserName);
-                localStorage.setItem('Token', data.Token);
-                localStorage.setItem('Role', data.Role);
-                $("#wssURL").val(data.wssURL);
-                showDashboard();
-                openSocket();
-                return false;
-            })
-            .fail((data) => {
-                console.error('Auth Failed');
-                return false;
-            });
-    };
-
-
-    $("#btnLogon").on('click', function(e) {
-        e.preventDefault();
-        userLogon($("#username").val(), Base64.encode(md5($("#userpasswd").val())));
-    });
-
     $('input').blur(function() {
         var $this = $(this);
         console.log($this);
@@ -183,14 +144,9 @@ $(window, document).load(function() {
         $(this).removeClass('is-active');
     });
 
-    if (localStorage.UserName &&
-        localStorage.Token &&
-        localStorage.Role) {
-        $('#frmLogon').hide();
-        $('#dashboard').show();
-    } else {
-        $('#frmLogon').show();
-        $('#dashboard').hide();
+    if (!(localStorage.UserName &&
+            localStorage.Token &&
+            localStorage.Role)) {
+        //got to logon
     }
-
 });
