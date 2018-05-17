@@ -76,15 +76,21 @@ const interval = setInterval(function sendKeepAlive() {
 ///////////////////////////////////
 //Eventos WebSockets Salas remotas
 //////////////////////////////////
+wss.aSockets = [];
+
 wss.on('connection', function connection(ws, req) {
     ws.isAlive = true;
-    let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
-    //console.log('HandleID ' + ws._socket._handle.fd);
-    ws.id = wss.getUniqueID();
-    //wss.clients.forEach(function each(client) {
-    console.log('Client.ID: ' + ws.id + ' Connected');
-    //});
-
+    if (!wss.aSockets[userName]) {
+        wss.aSockets[userName] = [];
+        let ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+        //console.log('HandleID ' + ws._socket._handle.fd);
+        ws.id = wss.getUniqueID();
+        //wss.clients.forEach(function each(client) {
+        console.log('Client.ID: ' + ws.id + ' Connected');
+        //});
+    }
+    wss.aSockets[userName].push(socketID);
+    console.log(wss.aSockets);
     //console.dir(req.headers['sec-websocket-key']);
     ws.send(JSON.stringify({ 'event': 'Connected', 'message': `Client ID -> ${ws.id}  Connected!!!. Your IP  ${ip}` }));
     ws.on('message', (data) => {
