@@ -41,7 +41,7 @@ UserModel.Close = function() {
 
 UserModel.Find = function(queryString, callback) {
     dbOpen();
-   
+
     db.get(queryString, (err, row) => {
         if (err) {
             dbClose();
@@ -134,25 +134,25 @@ UserModel.All = function(callback) {
                FROM Users`;
     dbOpen();
     let allRows = [];
-    db.each(sql,(err,row)=>{
+    db.each(sql, (err, row) => {
         if (err) {
             dbClose();
             console.error(err.message);
             callback(err.message, null);
         } else {
             allRows.push(row);
-        } 
-    }, (err,count)=>{
-        if( allRows.length >=1 ){
+        }
+    }, (err, count) => {
+        if (allRows.length >= 1) {
             dbClose();
             console.log(allRows);
             callback(null, allRows);
         } else {
             dbClose();
             callback(`No se encuentran registros`, null);
-        }  
+        }
     });
-      
+
     /* db.get(sql, (err, row) => {
         if (err) {
             dbClose();

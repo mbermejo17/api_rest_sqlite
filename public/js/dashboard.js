@@ -23,6 +23,15 @@ $(window, document).load(function() {
         return "";
     };
 
+    var setCookie = function(name, value, days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    }
 
     /* if ($('#wssURL').val()) {
         var wss = new WebSocket($('#wssURL').val());
@@ -140,6 +149,15 @@ $(window, document).load(function() {
             $this.removeClass('used');
     });
 
+    $("#logout").on('click', function(e) {
+        e.preventDefault();
+        setCookie('UserName', '', 0);
+        setCookie('UserRole', '', 0);
+        setCookie('sessionId', '', 0);
+        setCookie('token', '', 0);
+        setCookie('wssURL', '', 0);
+        document.location.href = '/';
+    });
 
     $ripples.on('click.Ripples', function(e) {
 

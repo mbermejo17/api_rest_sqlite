@@ -1,22 +1,29 @@
 const jwt = require('jsonwebtoken');
 
 module.exports = (req, res, next) => {
-    console.log(req.cookies.token);
-    console.log('check-user');
-    try {
-        const token = req.headers.authorization.split(" ")[1];
-        const decoded = jwt.verify(token, process.env.JWT_KEY);
-        console.dir(decoded);
-        req.userData = decoded;
+    console.log('middeleware:check-user');
+    const sessionId = req.cookies.sessionId;
+    const Token = req.cookies.token;
+    if (sessionId && Token) {
+        console.log('Token: ' + Token);
         next();
-    } catch (error) {
-        const sessionId = req.cookies.sessionId;
-        const Token = req.cookies.token;
-        if (sessionId && Token) {
-            console.log('cookie: '+ Token);
-            next();
-        } else {
-            res.render("index",{});
-        }
+    } else {
+        res.render("index", {});
     }
+    /* try {
+      const token = req.headers.authorization.split(" ")[1];
+      const decoded = jwt.verify(token, process.env.JWT_KEY);
+      console.log('Token found:', token);
+      req.userData = decoded;
+      next();
+    } catch (error) {
+      const sessionId = req.cookies.sessionId;
+      const Token = req.cookies.token;
+      if (sessionId && Token) {
+        console.log('Token: ' + Token);
+        next();
+      } else {
+        res.render("index", {});
+      }
+    } */
 };

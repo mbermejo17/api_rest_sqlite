@@ -31,10 +31,10 @@ let wssRemoteRoom = new WebSocketServer({
 });
 
 
-httpsServer.on('uncaughtException',(request, response, route, error)=>{
+httpsServer.on('uncaughtException', (request, response, route, error) => {
     console.error(error.stack);
     response.send(error);
-  });
+});
 httpsServer.on('upgrade', (req, socket, head) => {
     const pathname = url.parse(req.url).pathname;
 
@@ -64,14 +64,20 @@ const interval = setInterval(function sendKeepAlive() {
         console.log('Client.ID ' + ws.id + ' isAlive ' + ws.isAlive);
         if (ws.isAlive === false) return ws.terminate();
         ws.isAlive = false;
-        ws.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
+        ws.send(JSON.stringify({
+            'event': 'KeepAlive',
+            'message': ''
+        }));
         ws.ping(noop);
     });
     wssRemoteRoom.clients.forEach(function each(wsRemoteRoom) {
         console.log('Room.ID ' + wsRemoteRoom.id + ' isAlive ' + wsRemoteRoom.isAlive);
         if (wsRemoteRoom.isAlive === false) return wsRemoteRoom.terminate();
         wsRemoteRoom.isAlive = false;
-        wsRemoteRoom.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
+        wsRemoteRoom.send(JSON.stringify({
+            'event': 'KeepAlive',
+            'message': ''
+        }));
         wsRemoteRoom.ping(noop);
     });
 }, 30000);
@@ -96,12 +102,16 @@ wss.on('connection', function connection(ws, req) {
     wss.aSockets[userName].push(socketID);
     console.log(wss.aSockets);
     //console.dir(req.headers['sec-websocket-key']);
-    ws.send(JSON.stringify({ 'event': 'Connected', 'message': `Client ID -> ${ws.id}  Connected!!!. Your IP  ${ip}` }));
+    ws.send(JSON.stringify({
+        'event': 'Connected',
+        'message': `Client ID -> ${ws.id}  Connected!!!. Your IP  ${ip}`
+    }));
     ws.on('message', (data) => {
         let jsonData = JSON.parse(data);
         let eventType = jsonData.event;
         let message = jsonData.message;
-        if (eventType === 'KeepAlive') ws.isAlive = true;
+        if (eventType === 'KeepAlive')
+            ws.isAlive = true;
         //ws.send(`Data received from IP ${ip} : ${data.toString()} `) // echo-server
     })
     ws.on('pong', () => {
@@ -125,12 +135,16 @@ wssRemoteRoom.on('connection', function connection(wsRemoteRoom, req) {
     });
 
     //console.dir(req.headers['sec-websocket-key']);
-    wsRemoteRoom.send(JSON.stringify({ 'event': 'Connected', 'message': `Room ID -> ${wsRemoteRoom.id}  Connected!!!. Your IP  ${ip}` }));
+    wsRemoteRoom.send(JSON.stringify({
+        'event': 'Connected',
+        'message': `Room ID -> ${wsRemoteRoom.id}  Connected!!!. Your IP  ${ip}`
+    }));
     wsRemoteRoom.on('message', (data) => {
         let jsonData = JSON.parse(data);
         let eventType = jsonData.event;
         let message = jsonData.message;
-        if (eventType === 'KeepAlive') wsRemoteRoom.isAlive = true;
+        if (eventType === 'KeepAlive')
+            wsRemoteRoom.isAlive = true;
         //ws.send(`Data received from IP ${ip} : ${data.toString()} `) // echo-server
     })
     wsRemoteRoom.on('pong', () => {

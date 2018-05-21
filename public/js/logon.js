@@ -13,7 +13,7 @@ $(window, document).load(function() {
         window.location.href = '/dashboard';
     };
 
-    function setCookie(name, value, days) {
+    var setCookie = function(name, value, days) {
         var expires = "";
         if (days) {
             var date = new Date();
