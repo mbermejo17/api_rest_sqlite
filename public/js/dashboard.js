@@ -7,13 +7,6 @@ $(window, document).load(function() {
     var $UserName = document.getElementsByName("UserName");
     var $UserRole = document.getElementsByName("UserRole");
     var wss = undefined;
-<<<<<<< HEAD
-
-    var headerParams = {'Authorization':'Bearer ' + $($Token).val()};
-
-    
-=======
->>>>>>> 801fd1d5bc1d90dc779551758124c31c54524f12
     var getCookie = function(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
@@ -77,7 +70,7 @@ $(window, document).load(function() {
             type: type,
             data: data,
             dataType: 'json',
-            beforeSend: function (xhr) {
+            beforeSend: function(xhr) {
                 xhr.setRequestHeader(headerParams);
             },
             timeout: 10000,
@@ -115,7 +108,8 @@ $(window, document).load(function() {
     var $ripples = $('.ripples');
 
 
-<<<<<<< HEAD
+    <<
+    << << < HEAD
     var userTest = function(username, userpasswd) {
         var jsonData = {
             'username': username,
@@ -140,8 +134,9 @@ $(window, document).load(function() {
         userLogon($("#username").val(), Base64.encode(md5($("#userpasswd").val())));
     });
 
-=======
->>>>>>> 801fd1d5bc1d90dc779551758124c31c54524f12
+    ===
+    === = >>>
+    >>> > 801 fd1d5bc1d90dc779551758124c31c54524f12
     $('input').blur(function() {
         var $this = $(this);
         console.log($this);
@@ -182,14 +177,15 @@ $(window, document).load(function() {
 
     $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
         $(this).removeClass('is-active');
-    });
-<<<<<<< HEAD
-=======
+    }); <<
+    << << < HEAD
+        ===
+        === =
 
-    if (!(localStorage.UserName &&
-            localStorage.Token &&
-            localStorage.Role)) {
-        //got to logon
-    }
->>>>>>> 801fd1d5bc1d90dc779551758124c31c54524f12
+        if (!(localStorage.UserName &&
+                localStorage.Token &&
+                localStorage.Role)) {
+            //got to logon
+        } >>>
+        >>> > 801 fd1d5bc1d90dc779551758124c31c54524f12
 });
