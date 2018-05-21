@@ -8,22 +8,7 @@ html(lang="es")
     h1!= message
     hgroup
         #contentTitle Acceso Usuario
-    form#frmLogon(style="display:none")
-        .group
-            input(type='text')#username
-            span.highlight
-            span.bar
-            label Usuario
-        .group
-            input(type='password')#userpasswd
-            span.highlight
-            span.bar
-            label Clave
-        button.button.buttonBlue(type='button')#btnLogon
-            | Aceptar
-            .ripples.buttonRipples
-            span.ripplesCircle
-    #dashboard(style="display:none").panel
+    #dashboard.panel
       .row         
         button.button.buttonBlue.camControl(type='button')
           | Home
@@ -71,7 +56,10 @@ html(lang="es")
           span.ripplesCircle 
     footer
       #message
-    input(type="hidden", id="wssURL",name="wssURL",value="")   
+    input(type="hidden", id="UserName",name="UserName",value=UserName )  
+    input(type="hidden", id="UserRole",name="UserRole",value=Role)  
+    input(type="hidden", id="wssURL",name="wssURL",value=wssURL)   
+    input(type="hidden", id="token",name="token",value=Token)
     script(src='js/jquery-2.2.4.min.js')
     script(src='js/lib/md5.min.js')
     script(src='js/lib/base64.min.js')

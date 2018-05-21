@@ -3,16 +3,14 @@
 $(window, document).load(function() {
 
     var $wssURL = document.getElementById("#wssURL");
+    var $Token = document.getElementsByName("token");
+    var $UserName = document.getElementsByName("UserName");
+    var $UserRole = document.getElementsByName("UserRole");
     var wss = undefined;
 
-    var showDashboard = function(){
-        $("#username").val("");
-        $("#userpasswd").val("");
-        $("#frmLogon").hide();
-        $('#contentTitle').html("Control cámara");
-        $('#dashboard').show();
-    };
+    var headerParams = {'Authorization':'Bearer ' + $($Token).val()};
 
+    
     var getCookie = function(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
@@ -76,6 +74,9 @@ $(window, document).load(function() {
             type: type,
             data: data,
             dataType: 'json',
+            beforeSend: function (xhr) {
+                xhr.setRequestHeader(headerParams);
+            },
             timeout: 10000,
             success: function(result) {
                 if (result) {
@@ -111,22 +112,16 @@ $(window, document).load(function() {
     var $ripples = $('.ripples');
 
 
-    var userLogon = function(username, userpasswd) {
+    var userTest = function(username, userpasswd) {
         var jsonData = {
             'username': username,
             'userpasswd': userpasswd
         };
-        var fnUserLogon = new AJAXCallDeferred('/user/login', 'POST', jsonData, true);
+        var fnUserLogon = new AJAXCallDeferred('/user', 'GET', jsonData, true);
         console.log(username, userpasswd);
         $.when(fnUserLogon)
             .done((data) => {
                 console.log(data);
-                localStorage.setItem('UserName', data.UserName);
-                localStorage.setItem('Token', data.Token);
-                localStorage.setItem('Role', data.Role);
-                $("#wssURL").val(data.wssURL);
-                showDashboard();
-                openSocket();
                 return false;
             })
             .fail((data) => {
@@ -182,15 +177,4 @@ $(window, document).load(function() {
     $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
         $(this).removeClass('is-active');
     });
-
-    if (localStorage.UserName &&
-        localStorage.Token &&
-        localStorage.Role) {
-        $('#frmLogon').hide();
-        $('#dashboard').show();
-    } else {
-        $('#frmLogon').show();
-        $('#dashboard').hide();
-    }
-
 });

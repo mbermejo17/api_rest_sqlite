@@ -9,7 +9,85 @@ const JWT_KEY = config.jwtKey;
 
 const User = require("../models/user");
 
-exports.UserAdd = (req, res, next) => {
+exports.Index = (req, res, next) => {
+    const cookie = req.cookies.sessionId;
+    console.log('cookie: ' + cookie);
+    if (cookie === undefined) {
+        res.render('index', { title: 'Logon', message: '' });
+    } else {
+        if (req.cookies.token) {
+            console.log('hola');
+            res.render('dashboard', {
+                "UserName": data.UserName,
+                "Token": req.cookies.token,
+                "Role": req.cookies.UserRole,
+                "wssURL": req.cookies.wssURL
+            });
+        }
+    }
+};
+
+exports.Dashboard = (req, res, next) => {
+    console.log('dashboard');
+    res.render('dashboard', {
+        "UserName": req.cookies.UserName,
+        "Token": req.cookies.token,
+        "Role": req.cookies.UserRole,
+        "wssURL": req.cookies.wssURL
+    });
+};
+
+exports.UserLogin = (req, res, next) => {
+    User.Find(`SELECT UserName, UserPasswd, UserRole FROM Users WHERE UPPER(UserName) = '${req.body.username.toUpperCase()}'`, (status, data) => {
+        console.log("User Find : " + status + "  " + data);
+        if (status) {
+            console.log(status);
+            res.status(500).json({ "status": 'FAIL', "message": status });
+        } else {
+            if (data) {
+                //bcrypt.compare(req.body.password, data.UserPasswd, (err, result) => {
+                //console.log(Base64.encode(req.body.userpasswd));     
+                //console.log(Base64.decode(data.UserPasswd));  
+                if (Base64.decode(req.body.userpasswd) === data.UserPasswd) {
+                    /* const token = jwt.sign({
+                        UserName: data.UserName,
+                        UserId: data._id
+                    }, process.env.JWT_KEY, { expiresIn: "1h" }); */
+                    let wsPath = (data.UserRole === 'assistant') ? config.wssURL + '/room' : config.wssURL + '/client';
+                    const token = jwt.sign({
+                        "UserName": data.UserName,
+                        "UserId": data._id,
+                        "Role": data.UserRole,
+                        "wssURL": wsPath
+                    }, JWT_KEY, { expiresIn: "10min" });
+
+                    res.cookie('sessionId', Base64.encode(data.UserName), { maxAge: 900000 });
+                    return res.status(200).json({
+                        "status": 'OK',
+                        "message": {
+                            "UserName": data.UserName,
+                            "Token": token,
+                            "Role": data.UserRole,
+                            "wssURL": wsPath
+                        }
+                    });
+                    /* res.render('dashboard', {
+                        "UserName": data.UserName,
+                        "Token": token,
+                        "Role": data.UserRole,
+                        "wssURL": wsPath,
+                        "sessionId":Base64.encode(data.UserName)
+                    }); */
+                } else {
+                    return res.status(401).json({ "status": 'FAIL', "message": "Auth failed" });
+                }
+            } else {
+                return res.status(401).json({ "status": 'FAIL', "message": "Auth failed" });
+            }
+        }
+    });
+};
+exports.ApiUserAdd = (req, res, next) => {
     User
         .Find({ email: req.body.email })
         .exec()
@@ -52,7 +130,7 @@ exports.UserAdd = (req, res, next) => {
         });
 };
 
-exports.UserLogin = (req, res, next) => {
+exports.ApiUserLogin = (req, res, next) => {
     User.Find(`SELECT UserName, UserPasswd, UserRole FROM Users WHERE UPPER(UserName) = '${req.body.username.toUpperCase()}'`, (status, data) => {
         if (status) {
             console.log(status);
@@ -72,7 +150,7 @@ exports.UserLogin = (req, res, next) => {
                         UserId: data._id
                     }, JWT_KEY, { expiresIn: "10min" });
                     let wsPath = (data.UserRole === 'assistant') ? config.wssURL + '/room' : config.wssURL + '/client';
-                    res.cookie('sessionId',Base64.encode(data.UserName), { maxAge: 900000});
+                    res.cookie('sessionId', Base64.encode(data.UserName), { maxAge: 900000 });
                     return res.status(200).json({
                         "status": 'OK',
                         "message": {
@@ -92,7 +170,7 @@ exports.UserLogin = (req, res, next) => {
     });
 };
 
-exports.UserDelete = (req, res, next) => {
+exports.ApiUserDelete = (req, res, next) => {
     User.Remove(req.params.userId, (err, data) => {
         if (err) {
             res.status(200).json({ message: "User deleted" });
@@ -103,7 +181,7 @@ exports.UserDelete = (req, res, next) => {
     });
 };
 
-exports.GetUserAll = (req, res, next) => {
+exports.ApiGetUserAll = (req, res, next) => {
     User.All((err, data) => {
         if (err) {
             console.log(err);
@@ -119,7 +197,7 @@ exports.GetUserAll = (req, res, next) => {
     });
 };
 
-exports.GetUserByName = (req, res, next) => {
+exports.ApiGetUserByName = (req, res, next) => {
     User.FindByName(req.params.userName, (err, data) => {
         if (err) {
             console.log(err);
@@ -134,7 +212,7 @@ exports.GetUserByName = (req, res, next) => {
     });
 };
 
-exports.GetUserById = (req, res, next) => {
+exports.ApiGetUserById = (req, res, next) => {
     User.FindById(req.params.userId, (err, data) => {
         if (err) {
             console.log(err);

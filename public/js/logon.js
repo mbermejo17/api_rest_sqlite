@@ -5,13 +5,24 @@ $(window, document).load(function() {
     var $wssURL = document.getElementById("#wssURL");
     var wss = undefined;
 
-    var showDashboard = function(){
-        $("#username").val("");
-        $("#userpasswd").val("");
-        $("#frmLogon").hide();
-        $('#contentTitle').html("Control cámara");
-        $('#dashboard').show();
+    var showDashboard = function(data){
+        setCookie('token',data.Token,1);
+        setCookie('UserName',data.UserName,1);
+        setCookie('UserRole',data.Role,1);
+        setCookie('wssURL',data.wssURL,1);
+        window.location.href = '/dashboard';
     };
+
+    function setCookie(name,value,days) {
+        var expires = "";
+        if (days) {
+            var date = new Date();
+            date.setTime(date.getTime() + (days*24*60*60*1000));
+            expires = "; expires=" + date.toUTCString();
+        }
+        document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+    }
+    
 
     var getCookie = function(cname) {
         var name = cname + "=";
@@ -79,7 +90,7 @@ $(window, document).load(function() {
             timeout: 10000,
             success: function(result) {
                 if (result) {
-                    console.log(result);
+                    console.log("AJAX Result",result);
                     if (stringify === true) {
                         var jsonstring = $.parseJSON(JSON.stringify(result));
                     } else {
@@ -93,6 +104,7 @@ $(window, document).load(function() {
                 }
             },
             error: function(xhr, status) {
+                console.log("AJAX Result",status);
                 if (status === "timeout") {
                     df.reject('Servicio no disponible\n, intÃ©ntelo mas tarde.');
                 } else {
@@ -116,21 +128,17 @@ $(window, document).load(function() {
             'username': username,
             'userpasswd': userpasswd
         };
-        var fnUserLogon = new AJAXCallDeferred('/user/login', 'POST', jsonData, true);
+        var fnUserLogon = new AJAXCallDeferred('/login', 'POST', jsonData, true);
         console.log(username, userpasswd);
         $.when(fnUserLogon)
             .done((data) => {
-                console.log(data);
-                localStorage.setItem('UserName', data.UserName);
-                localStorage.setItem('Token', data.Token);
-                localStorage.setItem('Role', data.Role);
-                $("#wssURL").val(data.wssURL);
-                showDashboard();
-                openSocket();
+                console.log('Data :',data);
+                showDashboard(data);
                 return false;
             })
             .fail((data) => {
-                console.error('Auth Failed');
+                //console.log(data);
+                //console.error('Auth Failed');
                 return false;
             });
     };

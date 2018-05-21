@@ -3,8 +3,7 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const productRoutes = require("./api/routes/products");
-const orderRoutes = require("./api/routes/orders");
+const ApiRoutes = require("./api/routes/api");
 const userRoutes = require('./api/routes/user');
 const path = require('path');
 
@@ -33,7 +32,7 @@ app.use((req, res, next) => {
 });
 
 // Routes handle requests
-app.get('/', function(req, res,next) {
+/* app.get('/', function(req, res,next) {
     let cookie = req.cookies.sessionId;
     console.log('cookie: '+ cookie);
     if (cookie === undefined) {
@@ -43,10 +42,10 @@ app.get('/', function(req, res,next) {
         res.render('dashboard', { title: 'Dashboard', message: '' });
     }  
 });
+ */
+app.use("/", userRoutes);
+app.use("/api", ApiRoutes);
 
-app.use("/products", productRoutes);
-app.use("/orders", orderRoutes);
-app.use("/user", userRoutes);
 
 // Error handle requests
 app.use((req, res, next) => {

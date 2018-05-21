@@ -31,6 +31,10 @@ let wssRemoteRoom = new WebSocketServer({
 });
 
 
+httpsServer.on('uncaughtException',(request, response, route, error)=>{
+    console.error(error.stack);
+    response.send(error);
+  });
 httpsServer.on('upgrade', (req, socket, head) => {
     const pathname = url.parse(req.url).pathname;
 
