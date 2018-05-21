@@ -7,15 +7,18 @@ $(window, document).load(function() {
     var $UserName = document.getElementsByName("UserName");
     var $UserRole = document.getElementsByName("UserRole");
     var wss = undefined;
+<<<<<<< HEAD
 
     var headerParams = {'Authorization':'Bearer ' + $($Token).val()};
 
     
+=======
+>>>>>>> 801fd1d5bc1d90dc779551758124c31c54524f12
     var getCookie = function(cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
-        for(var i = 0; i <ca.length; i++) {
+        for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
             while (c.charAt(0) == ' ') {
                 c = c.substring(1);
@@ -33,19 +36,19 @@ $(window, document).load(function() {
         openSocket();
     }
  */
-    
+
 
     window.onbeforeunload = function() {
-      if (getCookie('sessionId')=== "") {  
-        if (!wss === undefined) {
-            wss.onclose = function() {};
-            wss.close();
+        if (getCookie('sessionId') === "") {
+            if (!wss === undefined) {
+                wss.onclose = function() {};
+                wss.close();
+            }
+            localStorage.clear();
         }
-        localStorage.clear();
-      } 
     };
 
-    
+
     var openSocket = function() {
         console.log('WebSocket connection ')
         wss = new WebSocket($('#wssURL').val());
@@ -112,6 +115,7 @@ $(window, document).load(function() {
     var $ripples = $('.ripples');
 
 
+<<<<<<< HEAD
     var userTest = function(username, userpasswd) {
         var jsonData = {
             'username': username,
@@ -136,6 +140,8 @@ $(window, document).load(function() {
         userLogon($("#username").val(), Base64.encode(md5($("#userpasswd").val())));
     });
 
+=======
+>>>>>>> 801fd1d5bc1d90dc779551758124c31c54524f12
     $('input').blur(function() {
         var $this = $(this);
         console.log($this);
@@ -177,4 +183,13 @@ $(window, document).load(function() {
     $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
         $(this).removeClass('is-active');
     });
+<<<<<<< HEAD
+=======
+
+    if (!(localStorage.UserName &&
+            localStorage.Token &&
+            localStorage.Role)) {
+        //got to logon
+    }
+>>>>>>> 801fd1d5bc1d90dc779551758124c31c54524f12
 });

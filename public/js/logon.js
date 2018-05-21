@@ -5,12 +5,21 @@ $(window, document).load(function() {
     var $wssURL = document.getElementById("#wssURL");
     var wss = undefined;
 
+<<<<<<< HEAD
     var showDashboard = function(data){
         setCookie('token',data.Token,1);
         setCookie('UserName',data.UserName,1);
         setCookie('UserRole',data.Role,1);
         setCookie('wssURL',data.wssURL,1);
         window.location.href = '/dashboard';
+=======
+    var showDashboard = function() {
+        $("#username").val("");
+        $("#userpasswd").val("");
+        $("#frmLogon").hide();
+        $('#contentTitle').html("Control cámara");
+        $('#dashboard').show();
+>>>>>>> 801fd1d5bc1d90dc779551758124c31c54524f12
     };
 
     function setCookie(name,value,days) {
@@ -28,7 +37,7 @@ $(window, document).load(function() {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
-        for(var i = 0; i <ca.length; i++) {
+        for (var i = 0; i < ca.length; i++) {
             var c = ca[i];
             while (c.charAt(0) == ' ') {
                 c = c.substring(1);
@@ -46,19 +55,19 @@ $(window, document).load(function() {
         openSocket();
     }
  */
-    
+
 
     window.onbeforeunload = function() {
-      if (getCookie('sessionId')=== "") {  
-        if (!wss === undefined) {
-            wss.onclose = function() {};
-            wss.close();
+        if (getCookie('sessionId') === "") {
+            if (!wss === undefined) {
+                wss.onclose = function() {};
+                wss.close();
+            }
+            localStorage.clear();
         }
-        localStorage.clear();
-      } 
     };
 
-    
+
     var openSocket = function() {
         console.log('WebSocket connection ')
         wss = new WebSocket($('#wssURL').val());
@@ -194,11 +203,9 @@ $(window, document).load(function() {
     if (localStorage.UserName &&
         localStorage.Token &&
         localStorage.Role) {
-        $('#frmLogon').hide();
         $('#dashboard').show();
     } else {
         $('#frmLogon').show();
-        $('#dashboard').hide();
     }
 
 });
