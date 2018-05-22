@@ -158,7 +158,11 @@ $(window, document).load(function() {
             $this.removeClass('used');
     });
 
-
+    $(document).keyup(function (e) {
+        if (e.which == 13) {
+            $('#btnLogon').trigger('click');
+        }
+    });
     $ripples.on('click.Ripples', function(e) {
 
         var $this = $(this);
