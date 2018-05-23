@@ -3,8 +3,8 @@ const app = express();
 const cookieParser = require('cookie-parser');
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
-const ApiRoutes = require("./api/routes/api");
-const userRoutes = require('./api/routes/user');
+const ApiRoutes = require("./routes/api");
+const userRoutes = require('./routes/user');
 const path = require('path');
 
 app.use(morgan("dev"));
