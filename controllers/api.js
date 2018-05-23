@@ -10,9 +10,8 @@ const JWT_KEY = config.jwtKey;
 const User = require("../models/user");
 
 /**
- * 
  * @api {post} /api/user
- * @apiName UserAdd 
+ * @apiName UserAdd
  * @apiGroup User
  * @apiVersion  1.0.0
  * 

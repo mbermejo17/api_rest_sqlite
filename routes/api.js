@@ -8,6 +8,7 @@ const checkAuth = require('../middleware/check-auth');
 // Gestion de usuarios
 ////////////////////////
 
+
 router.get("/user", ApiController.GetAllUsers);
 
 router.get("/user/id/:userId", ApiController.GetUserById);
