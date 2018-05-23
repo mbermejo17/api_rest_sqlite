@@ -14,7 +14,7 @@ router.get("/user/id/:userId", ApiController.GetUserById);
 
 router.get("/user/name/:userName", ApiController.GetUserByName);
 
-router.post("/user/add", ApiController.UserAdd);
+router.post("/user", ApiController.UserAdd);
 
 router.post("/user/login", ApiController.UserLogin);
 

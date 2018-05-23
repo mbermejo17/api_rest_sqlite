@@ -35,12 +35,13 @@ content-type: application/json
 }
 
 ###
-POST https://localhost:8443/api/user/add HTTP/1.1
+POST https://localhost:8443/api/user HTTP/1.1
 content-type: application/json
 
 {
-    "username": "Juan",
-    "userpasswd": "YzljMjQ0ZTQ4Y2FhNjQ1NjE4MzEyNWQ3ZDkzNTlmNGI="
+    "username": "Luis",
+    "userpasswd": "YzljMjQ0ZTQ4Y2FhNjQ1NjE4MzEyNWQ3ZDkzNTlmNGI=",
+    "userrole" : "user"
 }
 
 

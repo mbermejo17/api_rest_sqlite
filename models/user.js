@@ -1,5 +1,5 @@
 const path = require('path')
-const config = require('../../config/config.json');
+const config = require('../config/config.json');
 const dbPath = path.resolve(config.dbPath, config.dbName);
 const sqlite3 = require('sqlite3').verbose();
 
@@ -107,6 +107,7 @@ UserModel.Remove = function(userId, callback) {
 
 
 UserModel.FindByName = function(userName, callback) {
+    console.log(userName);
     let sql = `SELECT UserName, UserId, UserPasswd, UserRole
                FROM Users
                WHERE UPPER(UserName)  = ?`;
@@ -171,11 +172,10 @@ UserModel.All = function(callback) {
 };
 
 UserModel.Add = function(userData, callback) {
-    let response = {}; //respuesta para devolver 
-
+    let response = {}; 
     dbOpen();
     let stmt = db.prepare("SELECT * FROM Users WHERE UserName = ?");
-
+    console.log('PASSWD:',userData.password);
     stmt.bind(userData.username);
     stmt.get(function(error, rows) {
         //console.log(JSON.stringify(error)); return;
