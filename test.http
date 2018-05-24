@@ -39,7 +39,7 @@ POST https://localhost:8443/api/user HTTP/1.1
 content-type: application/json
 
 {
-    "username": "Luis",
+    "username": "Ramon",
     "userpasswd": "YzljMjQ0ZTQ4Y2FhNjQ1NjE4MzEyNWQ3ZDkzNTlmNGI=",
     "userrole" : "user"
 }

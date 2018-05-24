@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 
-const ApiController = require('../controllers/api');
+const ApiController = require('../controllers/UserApi');
 const checkAuth = require('../middleware/check-auth');
 
 ////////////////////////
@@ -9,7 +9,7 @@ const checkAuth = require('../middleware/check-auth');
 ////////////////////////
 
 
-router.get("/user", ApiController.GetAllUsers);
+router.get("/user", ApiController.UserGetAll);
 
 router.get("/user/id/:userId", ApiController.GetUserById);
 
