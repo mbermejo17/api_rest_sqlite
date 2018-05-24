@@ -34,9 +34,9 @@ $(window, document).load(function() {
     }
 
     /* if ($('#wssURL').val()) {
-        var wss = new WebSocket($('#wssURL').val());
-        openSocket();
-    }
+      var wss = new WebSocket($('#wssURL').val());
+      openSocket();
+  }
  */
 
 
@@ -62,7 +62,10 @@ $(window, document).load(function() {
                 var event = data.event;
                 var message = data.message;
                 if (event === 'KeepAlive') {
-                    wss.send(JSON.stringify({ 'event': 'KeepAlive', 'message': '' }));
+                    wss.send(JSON.stringify({
+                        'event': 'KeepAlive',
+                        'message': ''
+                    }));
                     //wss.pong();
                 }
                 $('#message').html(`received: ${data.message}`);
@@ -115,7 +118,48 @@ $(window, document).load(function() {
 
 
     var $ripples = $('.ripples');
+    var fnUploadFile = function(formData, nFile, fileName) {
+        $('#fileName' + nFile).html(fileName);
+        $('#fileName' + nFile).show();
+        $('.progress-bar' + nFile).show();
+        $.ajax({
+            url: '/mnt/upload',
+            type: 'POST',
+            data: formData,
+            processData: false,
+            contentType: false,
+            success: function(data) {
+                console.log(fileName + 'upload successful!\n' + data);
+            },
+            xhr: function() {
+                // create an XMLHttpRequest
+                var xhr = new XMLHttpRequest();
 
+                // listen to the 'progress' event
+                xhr.upload.addEventListener('progress', function(evt) {
+
+                    if (evt.lengthComputable) {
+                        // calculate the percentage of upload completed
+                        var percentComplete = evt.loaded / evt.total;
+                        percentComplete = parseInt(percentComplete * 100);
+
+                        // update the Bootstrap progress bar with the new percentage
+                        $('#progress-bar' + nFile).text(percentComplete + '%');
+                        $('#progress-bar' + nFile).width(percentComplete + '%');
+
+                        // once the upload reaches 100%, set the progress bar text to done
+                        if (percentComplete === 100) {
+                            $('#progress-bar' + nFile).html('Done');
+                        }
+
+                    }
+
+                }, false);
+
+                return xhr;
+            }
+        });
+    };
     var userTest = function(username, userpasswd) {
         var jsonData = {
             'username': username,
@@ -133,6 +177,7 @@ $(window, document).load(function() {
                 return false;
             });
     };
+
 
 
     $("#btnLogon").on('click', function(e) {
@@ -190,4 +235,35 @@ $(window, document).load(function() {
     $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
         $(this).removeClass('is-active');
     });
+
+    $('#btnUpload').on('click', function(e) {
+        e.preventDefault();
+        for (var i = 0; i < 4; i++) {
+            $('#fileName' + i).hide();
+            $('.progress-bar' + i).hide();
+            $('#progress-bar' + i).text('0%');
+            $('#progress-bar' + i).width('0%');
+            $('#fileName' + i).html('');
+        }
+        var files = $('#inputFiles').get(0).files;
+        console.log(files.length);
+        console.log(files);
+        if (files.length > 0 && files.length < 5) {
+            // create a FormData object which will be sent as the data payload in the
+            // AJAX request
+
+
+            // loop through all the selected files and add them to the formData object
+            for (var i = 0; i < files.length; i++) {
+                var file = files[i];
+                var formData = new FormData();
+                // add the files to formData object for the data payload
+                formData.append('uploads[]', file, file.name);
+                fnUploadFile(formData, i, file.name);
+            }
+        } else {
+            alert('No se pueden subir más de 4 archivos');
+        }
+    });
+
 });

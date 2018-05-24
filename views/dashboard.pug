@@ -55,8 +55,14 @@ html(lang="es")
           .ripples.buttonRipples#btnZOUT
           span.ripplesCircle
     form(ref='uploadForm',id='uploadForm',action='/mnt/upload',method='post',encType="multipart/form-data")
-        input(type="file",name="sampleFile", multiple="multiple")
-        input(type='submit',value='Upload!')     
+        input(id="inputFiles",type="file",name="uploads[]", multiple="multiple")
+        input(id="btnUpload",type='button',value='Upload!')
+    div.pogress.pogress-bar1
+        div.pogress-bar#pogress-bar1
+    div.pogress.pogress-bar2
+        div.pogress-bar#pogress-bar2
+    div.pogress.pogress-bar3
+        div.pogress-bar#pogress-bar3        
     a(href='#')#logout logout
     footer
       #message
