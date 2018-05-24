@@ -29,6 +29,7 @@ exports.Download = (req, res, next) => {
 
 exports.Upload = (req, res, next) => {
     console.log('Mnt:Controller.Upload');
+
     // create an incoming form object
     var form = new formidable.IncomingForm();
 
@@ -36,11 +37,12 @@ exports.Upload = (req, res, next) => {
     form.multiples = true;
 
     // store all uploads in the /uploads directory
-    form.uploadDir = path.join(__dirname, '../public/download');
+    form.uploadDir = path.join(__dirname, 'download');
 
     // every time a file has been uploaded successfully,
     // rename it to it's orignal name
     form.on('file', function(field, file) {
+        console.log(file.name);
         fs.rename(file.path, path.join(form.uploadDir, file.name));
     });
 
@@ -55,10 +57,10 @@ exports.Upload = (req, res, next) => {
     });
 
     // Upload progress 
-    /* form.on('progress', function(bytesReceived, bytesExpected) {
+    form.on('progress', function(bytesReceived, bytesExpected) {
         var percent_complete = (bytesReceived / bytesExpected) * 100;
         console.log(percent_complete.toFixed(2));
-    }); */
+    });
 
     // parse the incoming request containing the form data
     form.parse(req);

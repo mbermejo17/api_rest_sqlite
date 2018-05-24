@@ -119,9 +119,6 @@ $(window, document).load(function() {
 
     var $ripples = $('.ripples');
     var fnUploadFile = function(formData, nFile, fileName) {
-        $('#fileName' + nFile).html(fileName);
-        $('#fileName' + nFile).show();
-        $('.progress-bar' + nFile).show();
         $.ajax({
             url: '/mnt/upload',
             type: 'POST',
@@ -236,27 +233,24 @@ $(window, document).load(function() {
         $(this).removeClass('is-active');
     });
 
-    $('#btnUpload').on('click', function(e) {
-        e.preventDefault();
+    $('#inputFiles').on('change', function(e) {
+
         for (var i = 0; i < 4; i++) {
-            $('#fileName' + i).hide();
-            $('.progress-bar' + i).hide();
             $('#progress-bar' + i).text('0%');
             $('#progress-bar' + i).width('0%');
             $('#fileName' + i).html('');
         }
-        var files = $('#inputFiles').get(0).files;
+        var files = $(this).get(0).files;
         console.log(files.length);
-        console.log(files);
+        console.dir(files);
         if (files.length > 0 && files.length < 5) {
             // create a FormData object which will be sent as the data payload in the
             // AJAX request
 
-
+            var formData = new FormData();
             // loop through all the selected files and add them to the formData object
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
-                var formData = new FormData();
                 // add the files to formData object for the data payload
                 formData.append('uploads[]', file, file.name);
                 fnUploadFile(formData, i, file.name);

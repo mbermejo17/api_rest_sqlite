@@ -35,7 +35,6 @@ h3 {
     box-shadow: rgba(0, 0, 0, 0.14902) 0px 1px 1px 0px, rgba(0, 0, 0, 0.09804) 0px 1px 2px 0px;
 }
 
-
 .group {
     position: relative;
     margin-bottom: 45px;
@@ -182,10 +181,11 @@ input:focus~.highlight {
     padding: 3em 2em 2em 2em;
     background: #fafafa;
     border: 1px solid #ebebeb;
-    box-shadow: rgba(0, 0, 0, 0.14902) 0px 1px 1px 0px, rgba(0, 0, 0, 0.09804) 0px 1px 2px 0px;  
+    box-shadow: rgba(0, 0, 0, 0.14902) 0px 1px 1px 0px, rgba(0, 0, 0, 0.09804) 0px 1px 2px 0px;
     display: flex;
     flex-direction: column;
 }
+
 .row {
     width: 100%;
     height: 50px;
@@ -223,10 +223,11 @@ input:focus~.highlight {
 }
 
 .button.camControl {
-        width: 90px;
-        height: 40px;
-        font-size: .7em;
-    }
+    width: 90px;
+    height: 40px;
+    font-size: .7em;
+}
+
 
 /* Ripples circle */
 
@@ -317,4 +318,10 @@ footer img:hover {
 footer img:focus,
 footer a:focus {
     outline: none;
+}
+
+.progress-bar {
+    background-color: blue;
+    height: 40px;
+    width: 0;
 }
