@@ -45,6 +45,13 @@ content-type: application/json
 }
 
 
+###
+POST https://localhost:8443/mnt/upload HTTP/1.1
+content-type: multipart/form-data
+
+<request>
+    <sampleFile>sampleFile</sampleFile>
+</request>
 
 
 //curl -H "content-type: application/json" -k -d "{\"username\": \"pepe\", \"userpasswd\": \"YzljMjQ0ZTQ4Y2FhNjQ1NjE4MzEyNWQ3ZDkzNTlmNGI=\"}" -X POST https://localhost:8443/api/user/login

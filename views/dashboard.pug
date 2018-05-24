@@ -53,7 +53,10 @@ html(lang="es")
         button.button.buttonBlue.camControl(type='button')
           | Zoom OUT
           .ripples.buttonRipples#btnZOUT
-          span.ripplesCircle 
+          span.ripplesCircle
+    form(ref='uploadForm',id='uploadForm',action='/mnt/upload',method='post',encType="multipart/form-data")
+        input(type="file",name="sampleFile", multiple="multiple")
+        input(type='submit',value='Upload!')     
     a(href='#')#logout logout
     footer
       #message
