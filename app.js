@@ -6,17 +6,16 @@ const bodyParser = require("body-parser");
 const ApiRoutes = require("./routes/api");
 const userRoutes = require('./routes/user');
 const MntRoutes = require('./routes/mnt');
-const fileUpload = require('express-fileupload');
 const path = require('path');
+const debug = require('debug');
 
 app.use(morgan("dev"));
 app.use(cookieParser());
-app.use('/uploads', express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use("/", express.static('/uploads'));
 app.use("/", express.static(path.join(__dirname, 'public')));
 app.set('view engine', 'pug');
-app.use(fileUpload());
 
 // Header settings
 app.use((req, res, next) => {
@@ -34,20 +33,10 @@ app.use((req, res, next) => {
 });
 
 // Routes handle requests
-/* app.get('/', function(req, res,next) {
-    let cookie = req.cookies.sessionId;
-    console.log('cookie: '+ cookie);
-    if (cookie === undefined) {
-        res.render('index', { title: 'Logon', message: '' });
-    }else{
-        console.log('hola');
-        res.render('dashboard', { title: 'Dashboard', message: '' });
-    }  
-});
- */
+
 app.use("/", userRoutes);
 app.use("/api", ApiRoutes);
-app.use("/mnt",MntRoutes);
+app.use("/mnt", MntRoutes);
 
 
 // Error handle requests

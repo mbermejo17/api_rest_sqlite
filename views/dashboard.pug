@@ -54,14 +54,23 @@ html(lang="es")
           | Zoom OUT
           .ripples.buttonRipples#btnZOUT
           span.ripplesCircle
-    input(id="inputFiles",type="file",name="uploads[]", multiple="multiple")
-    input(id="btnUpload",type='button',value='Upload!')
-    div.progress.progress-bar1
-        div.progress-bar#progress-bar1
-    div.progress.progress-bar2
-        div.progress-bar#progress-bar2
-    div.progress.progress-bar3
-        div.progress-bar#progress-bar3        
+    .container
+      .row
+        .col-xs-12
+          .upload-panel.panel-default
+            .panel-body
+              h2 File Uploader
+              .progress
+                .progress-text1
+                  .progress-bar1(role="progressbar")
+                .progress-text2  
+                  .progress-bar2(role="progressbar")
+                .progress-text3
+                  .progress-bar3(role="progressbar")
+                .progress-text4
+                  .progress-bar4(role="progressbar")
+              button.btn.btn-lg.upload-btn(type="button") Upload
+              input(id="upload-input", type="file", name="uploads[]", multiple="multiple")       
     a(href='#')#logout logout
     footer
       #message

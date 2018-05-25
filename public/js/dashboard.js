@@ -1,13 +1,13 @@
 "use strict";
 
-$(window, document).load(function() {
+$(window, document).load(function () {
 
     var $wssURL = document.getElementById("#wssURL");
     var $Token = document.getElementsByName("token");
     var $UserName = document.getElementsByName("UserName");
     var $UserRole = document.getElementsByName("UserRole");
     var wss = undefined;
-    var getCookie = function(cname) {
+    var getCookie = function (cname) {
         var name = cname + "=";
         var decodedCookie = decodeURIComponent(document.cookie);
         var ca = decodedCookie.split(';');
@@ -23,7 +23,7 @@ $(window, document).load(function() {
         return "";
     };
 
-    var setCookie = function(name, value, days) {
+    var setCookie = function (name, value, days) {
         var expires = "";
         if (days) {
             var date = new Date();
@@ -40,10 +40,10 @@ $(window, document).load(function() {
  */
 
 
-    window.onbeforeunload = function() {
+    window.onbeforeunload = function () {
         if (getCookie('sessionId') === "") {
             if (!wss === undefined) {
-                wss.onclose = function() {};
+                wss.onclose = function () { };
                 wss.close();
             }
             localStorage.clear();
@@ -51,12 +51,12 @@ $(window, document).load(function() {
     };
 
 
-    var openSocket = function() {
+    var openSocket = function () {
         console.log('WebSocket connection ')
         wss = new WebSocket($('#wssURL').val());
-        wss.onopen = function(event) {
+        wss.onopen = function (event) {
             $('#message').html('Connected to: ' + event.currentTarget.url);
-            wss.onmessage = function(message) {
+            wss.onmessage = function (message) {
                 console.log(message.data);
                 var data = $.parseJSON(message.data);
                 var event = data.event;
@@ -73,7 +73,7 @@ $(window, document).load(function() {
         };
     };
     // AJAX call object
-    var AJAXCallDeferred = function(url, type, data, stringify) {
+    var AJAXCallDeferred = function (url, type, data, stringify) {
         var type = type || 'POST';
         var stringify = stringify || false;
         var df = $.Deferred();
@@ -82,11 +82,11 @@ $(window, document).load(function() {
             type: type,
             data: data,
             dataType: 'json',
-            beforeSend: function(xhr) {
+            beforeSend: function (xhr) {
                 xhr.setRequestHeader(headerParams);
             },
             timeout: 10000,
-            success: function(result) {
+            success: function (result) {
                 if (result) {
                     console.log(result);
                     if (stringify === true) {
@@ -101,7 +101,7 @@ $(window, document).load(function() {
                     }
                 }
             },
-            error: function(xhr, status) {
+            error: function (xhr, status) {
                 if (status === "timeout") {
                     df.reject('Servicio no disponible\n, intÃ©ntelo mas tarde.');
                 } else {
@@ -109,7 +109,7 @@ $(window, document).load(function() {
                 }
                 console.log(xhr, status);
             },
-            complete: function(xhr, status) {
+            complete: function (xhr, status) {
                 console.log(xhr, status);
             }
         });
@@ -118,37 +118,8 @@ $(window, document).load(function() {
 
 
     var $ripples = $('.ripples');
-    var fnUploadFile = function(formData) {
-        console.log('toi aqui');
-        $.ajax({
-            type: 'post',
-            url: '/mnt/upload',
-            data: formData,
-            contentType: false,
-            mimeType:"multipart/form-data",
-            cache: false,
-            processData: false,
-            success: function() {
-                // do something
-            },
-            xhrFields: {
-                // add listener to XMLHTTPRequest object directly for progress (jquery doesn't have this yet)
-                onprogress: function(progress) {
-                    console.log(progress);
-                    // calculate upload progress
-                    var percentage = Math.floor((progress.total / progress.totalSize) * 100);
-                    // log upload progress to console
-                    console.log('progress', percentage);
-                    if (percentage === 100) {
-                        console.log('DONE!');
-                    }
-                }
-            },
-            processData: false,
-            contentType: false
-        });
-    };
-    var userTest = function(username, userpasswd) {
+
+    var userTest = function (username, userpasswd) {
         var jsonData = {
             'username': username,
             'userpasswd': userpasswd
@@ -168,14 +139,14 @@ $(window, document).load(function() {
 
 
 
-    $("#btnLogon").on('click', function(e) {
+    $("#btnLogon").on('click', function (e) {
         e.preventDefault();
         userLogon($("#username").val(), Base64.encode(md5($("#userpasswd").val())));
     });
 
 
 
-    $("#logout").on('click', function(e) {
+    $("#logout").on('click', function (e) {
         e.preventDefault();
         setCookie('UserName', '', 0);
         setCookie('UserRole', '', 0);
@@ -185,7 +156,7 @@ $(window, document).load(function() {
         document.location.href = '/';
     });
 
-    $ripples.on('click.Ripples', function(e) {
+    $ripples.on('click.Ripples', function (e) {
 
         var $this = $(this);
         console.log($this[0].id);
@@ -213,36 +184,76 @@ $(window, document).load(function() {
         if ($this[0].id === 'btnM3') wss.send(JSON.stringify("{'event': 'CAM','message':'MOV_M3'}"));
     });
 
-    $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function(e) {
+    $ripples.on('animationend webkitAnimationEnd mozAnimationEnd oanimationend MSAnimationEnd', function (e) {
         $(this).removeClass('is-active');
     });
 
-    $('#inputFiles').on('change', function(e) {
+    $('.upload-btn').on('click', function () {
+        $('#upload-input').click();
+    });
 
-        for (var i = 0; i < 4; i++) {
-            $('#progress-bar' + i).text('0%');
-            $('#progress-bar' + i).width('0%');
-            $('#fileName' + i).html('');
-        }
+    $('#upload-input').on('change', function () {
+
         var files = $(this).get(0).files;
-        console.log(files.length);
-        console.dir(files);
+
         if (files.length > 0 && files.length < 5) {
             // create a FormData object which will be sent as the data payload in the
             // AJAX request
+            
 
-            var formData = new FormData();
             // loop through all the selected files and add them to the formData object
             for (var i = 0; i < files.length; i++) {
                 var file = files[i];
+                var formData = new FormData();
+                $('.progress-text' + (i+1)).text(file.name + '  -->0%');
+                $('.progress-bar' + (i+1)).width('0%');
                 // add the files to formData object for the data payload
                 formData.append('uploads[]', file, file.name);
-                
+                fnUploadFile(formData, i+1, file.name);
             }
-            fnUploadFile(formData);
         } else {
-            alert('No se pueden subir más de 4 archivos');
+            console.log('Error: max number of files 4');
+        } 
+    });
+});
+
+
+var fnUploadFile = function (formData,nFile, fileName) {
+    $.ajax({
+        url: '/mnt/upload',
+        type: 'POST',
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: function (data) {
+            console.log(fileName +' uploaded successfully!\n' + data);
+        },
+        xhr: function () {
+            // create an XMLHttpRequest
+            var xhr = new XMLHttpRequest();
+
+            // listen to the 'progress' event
+            xhr.upload.addEventListener('progress', function (evt) {
+
+                if (evt.lengthComputable) {
+                    // calculate the percentage of upload completed
+                    var percentComplete = evt.loaded / evt.total;
+                    percentComplete = parseInt(percentComplete * 100);
+
+                    // update the Bootstrap progress bar with the new percentage
+                    $('.progress-text'+nFile).text(fileName + '  -->' + percentComplete + '%');
+                    $('.progress-bar'+nFile).width(percentComplete + '%');
+
+                    // once the upload reaches 100%, set the progress bar text to done
+                    if (percentComplete === 100) {
+                        $('.progress-text'+nFile).html(fileName + '  -->Done');
+                    }
+
+                }
+
+            }, false);
+
+            return xhr;
         }
     });
-
-});
+};
