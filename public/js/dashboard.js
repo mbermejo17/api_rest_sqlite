@@ -118,43 +118,34 @@ $(window, document).load(function() {
 
 
     var $ripples = $('.ripples');
-    var fnUploadFile = function(formData, nFile, fileName) {
+    var fnUploadFile = function(formData) {
+        console.log('toi aqui');
         $.ajax({
+            type: 'post',
             url: '/mnt/upload',
-            type: 'POST',
             data: formData,
-            processData: false,
             contentType: false,
-            success: function(data) {
-                console.log(fileName + 'upload successful!\n' + data);
+            mimeType:"multipart/form-data",
+            cache: false,
+            processData: false,
+            success: function() {
+                // do something
             },
-            xhr: function() {
-                // create an XMLHttpRequest
-                var xhr = new XMLHttpRequest();
-
-                // listen to the 'progress' event
-                xhr.upload.addEventListener('progress', function(evt) {
-
-                    if (evt.lengthComputable) {
-                        // calculate the percentage of upload completed
-                        var percentComplete = evt.loaded / evt.total;
-                        percentComplete = parseInt(percentComplete * 100);
-
-                        // update the Bootstrap progress bar with the new percentage
-                        $('#progress-bar' + nFile).text(percentComplete + '%');
-                        $('#progress-bar' + nFile).width(percentComplete + '%');
-
-                        // once the upload reaches 100%, set the progress bar text to done
-                        if (percentComplete === 100) {
-                            $('#progress-bar' + nFile).html('Done');
-                        }
-
+            xhrFields: {
+                // add listener to XMLHTTPRequest object directly for progress (jquery doesn't have this yet)
+                onprogress: function(progress) {
+                    console.log(progress);
+                    // calculate upload progress
+                    var percentage = Math.floor((progress.total / progress.totalSize) * 100);
+                    // log upload progress to console
+                    console.log('progress', percentage);
+                    if (percentage === 100) {
+                        console.log('DONE!');
                     }
-
-                }, false);
-
-                return xhr;
-            }
+                }
+            },
+            processData: false,
+            contentType: false
         });
     };
     var userTest = function(username, userpasswd) {
@@ -182,14 +173,7 @@ $(window, document).load(function() {
         userLogon($("#username").val(), Base64.encode(md5($("#userpasswd").val())));
     });
 
-    $('input').blur(function() {
-        var $this = $(this);
-        console.log($this);
-        if ($this.val())
-            $this.addClass('used');
-        else
-            $this.removeClass('used');
-    });
+
 
     $("#logout").on('click', function(e) {
         e.preventDefault();
@@ -253,8 +237,9 @@ $(window, document).load(function() {
                 var file = files[i];
                 // add the files to formData object for the data payload
                 formData.append('uploads[]', file, file.name);
-                fnUploadFile(formData, i, file.name);
+                
             }
+            fnUploadFile(formData);
         } else {
             alert('No se pueden subir más de 4 archivos');
         }

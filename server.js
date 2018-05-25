@@ -1,5 +1,5 @@
-//const http = require('http');
-const https = require('https');
+const http = require('http');
+//const https = require('https');
 const fs = require('fs');
 const app = require('./app');
 const url = require('url');
@@ -9,10 +9,14 @@ const WebSocketServer = require('ws').Server
 const port = process.env.PORT || 8443;
 
 //const server = http.createServer(app);
-let httpsServer = https.createServer({
+/* let httpsServer = https.createServer({
     key: fs.readFileSync('./certs/ssl.key'),
     cert: fs.readFileSync('./certs/ssl.crt')
 }, app).listen(port, function() {
+    console.log("https server listening on port " + port + "...");
+});
+ */
+let httpsServer = http.createServer(app).listen(port, function() {
     console.log("https server listening on port " + port + "...");
 });
 
