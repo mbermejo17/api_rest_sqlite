@@ -15,6 +15,7 @@
     "author": "MBL",
     "license": "ISC",
     "dependencies": {
+        "apidoc-markdown": "^0.2.0",
         "bcrypt": "^2.0.1",
         "body-parser": "^1.18.2",
         "cookie-parser": "^1.4.3",
